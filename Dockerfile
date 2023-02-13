@@ -1,15 +1,18 @@
 FROM python:3.9
 
-WORKDIR /Vasya/Docker/
+RUN mkdir -p /usr/src/docker/
+WORKDIR /usr/src/docker/
+
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
 
 COPY Pipfile Pipfile.lock ./
 
 RUN pip install -U pipenv
 RUN pipenv install --system
-#CMD ["pipenv", "install", "-r", "./requirements.txt"]
 
 COPY . .
 
 EXPOSE 8000
 
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+ENTRYPOINT ["/usr/src/docker/entrypoint.sh"]

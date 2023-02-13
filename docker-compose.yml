@@ -1,0 +1,25 @@
+version: '3.9'
+
+services:
+  drf_test_task:
+    image: drf_test_task_image:latest
+    container_name: drf_tt_build
+    restart: always
+    command: python manage.py runserver 0.0.0.0:8000
+    ports:
+      - 8000:8000
+    env_file:
+      - .env
+    depends_on:
+      - db
+
+  db:
+    image: postgres:15
+    container_name: drf_postgres
+    volumes:
+      - pg_data:/var/lib/postgresql/data/
+    env_file:
+      - .env
+
+volumes:
+  pg_data:
