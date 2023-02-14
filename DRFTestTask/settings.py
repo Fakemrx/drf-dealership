@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 import os
 from pathlib import Path
+import typing
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -19,12 +20,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-zewtwvj$aw05xsd3!*#c-mg0lnz$0a7iujm)k63jbqbs8nyhs-'
+# django-insecure-zewtwvj$aw05xsd3!*#c-mg0lnz$0a7iujm)k63jbqbs8nyhs-
+SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get('DEBUG', default=True)
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS: typing.List[str] = os.environ.get('ALLOWED_HOSTS', default='*').split(',')
 
 # Application definition
 
@@ -70,17 +72,21 @@ WSGI_APPLICATION = 'DRFTestTask.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
-SQL_HOST = os.getenv('POSTGRES_HOST', 'localhost')
-SQL_PORT = os.getenv('POSTGRES_PORT', '5432')
+SQL_ENGINE = os.environ.get("SQL_ENGINE", default="django.db.backends.sqlite3")
+SQL_DATABASE = os.environ.get("SQL_DATABASE", default=os.path.join(BASE_DIR, "db.sqlite3"))
+SQL_USER = os.environ.get("SQL_USER", default="user")
+SQL_PASSWORD = os.environ.get("SQL_PASSWORD", default="password")
+SQL_HOST = os.environ.get("SQL_HOST", default="localhost")
+SQL_PORT = os.environ.get("SQL_PORT", default="5432")
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('POSTGRES_DB', 'postgres'),
-        'USER': os.getenv('POSTGRES_USER', 'postgres'),
-        'PASSWORD': os.getenv('POSTGRES_PASSWORD', '12345'),
-        'HOST': SQL_HOST,
-        'PORT': SQL_PORT,
+        "ENGINE": SQL_ENGINE,
+        "NAME": SQL_DATABASE,
+        "USER": SQL_USER,
+        "PASSWORD": SQL_PASSWORD,
+        "HOST": SQL_HOST,
+        "PORT": SQL_PORT,
     }
 }
 
@@ -101,6 +107,10 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+
+DEFAULT_SUPER_USER_USERNAME = os.environ.get('DEFAULT_SUPER_USER_USERNAME', default='admin')
+DEFAULT_SUPER_USER_PASSWORD = os.environ.get('DEFAULT_SUPER_USER_PASSWORD', default='admin')
+DEFAULT_SUPER_USER_EMAIL = os.environ.get('DEFAULT_SUPER_USER_EMAIL', default='')
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/

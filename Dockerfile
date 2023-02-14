@@ -1,7 +1,7 @@
 FROM python:3.9
 
-RUN mkdir -p /usr/src/docker/
-WORKDIR /usr/src/docker/
+RUN mkdir -p /usr/src/docker
+WORKDIR /usr/src/docker
 
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
@@ -15,4 +15,6 @@ COPY . .
 
 EXPOSE 8000
 
-ENTRYPOINT ["/usr/src/docker/entrypoint.sh"]
+RUN chmod +x /usr/src/docker/entrypoint.sh
+
+ENTRYPOINT ["sh", "entrypoint.sh"]
