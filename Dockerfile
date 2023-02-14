@@ -8,6 +8,9 @@ ENV PYTHONUNBUFFERED 1
 
 COPY Pipfile Pipfile.lock ./
 
+RUN apt-get update
+RUN apt install -y netcat
+
 RUN pip install -U pipenv
 RUN pipenv install --system
 

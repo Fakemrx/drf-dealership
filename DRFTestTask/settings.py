@@ -72,21 +72,21 @@ WSGI_APPLICATION = 'DRFTestTask.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
-SQL_ENGINE = os.environ.get("SQL_ENGINE", default="django.db.backends.sqlite3")
-SQL_DATABASE = os.environ.get("SQL_DATABASE", default=os.path.join(BASE_DIR, "db.sqlite3"))
-SQL_USER = os.environ.get("SQL_USER", default="user")
-SQL_PASSWORD = os.environ.get("SQL_PASSWORD", default="password")
-SQL_HOST = os.environ.get("SQL_HOST", default="localhost")
-SQL_PORT = os.environ.get("SQL_PORT", default="5432")
+POSTGRES_ENGINE = os.environ.get("POSTGRES_ENGINE", default="django.db.backends.sqlite3")
+POSTGRES_DB = os.environ.get("POSTGRES_DB", default=os.path.join(BASE_DIR, "db.sqlite3"))
+POSTGRES_USER = os.environ.get("POSTGRES_USER", default="user")
+POSTGRES_PASSWORD = os.environ.get("POSTGRES_PASSWORD", default="password")
+POSTGRES_HOST = os.environ.get("POSTGRES_HOST", default="localhost")
+POSTGRES_PORT = os.environ.get("POSTGRES_PORT", default="5432")
 
 DATABASES = {
     'default': {
-        "ENGINE": SQL_ENGINE,
-        "NAME": SQL_DATABASE,
-        "USER": SQL_USER,
-        "PASSWORD": SQL_PASSWORD,
-        "HOST": SQL_HOST,
-        "PORT": SQL_PORT,
+        "ENGINE": POSTGRES_ENGINE,
+        "NAME": POSTGRES_DB,
+        "USER": POSTGRES_USER,
+        "PASSWORD": POSTGRES_PASSWORD,
+        "HOST": POSTGRES_HOST,
+        "PORT": POSTGRES_PORT,
     }
 }
 
