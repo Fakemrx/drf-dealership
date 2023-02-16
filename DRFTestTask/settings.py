@@ -21,7 +21,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 # django-insecure-zewtwvj$aw05xsd3!*#c-mg0lnz$0a7iujm)k63jbqbs8nyhs-
-SECRET_KEY = os.environ.get('SECRET_KEY')
+SECRET_KEY = 'django-insecure-zewtwvj$aw05xsd3!*#c-mg0lnz$0a7iujm)k63jbqbs8nyhs-'  # os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DEBUG', default=True)
@@ -54,7 +54,7 @@ ROOT_URLCONF = 'DRFTestTask.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'templates/'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

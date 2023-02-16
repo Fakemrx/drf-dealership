@@ -1,3 +1,5 @@
+#!/bin/sh
+
 echo "Trying to launch psql"
 if [ "$DATABASE" = "postgres" ]
   then
