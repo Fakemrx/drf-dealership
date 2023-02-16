@@ -26,4 +26,4 @@ jobs:
       - name: Build docker
         run: docker compose up -d --build
       - name: Test
-        run : docker-compose exec drf_test_task pytest
+        run : docker-compose exec -T drf_test_task pytest
