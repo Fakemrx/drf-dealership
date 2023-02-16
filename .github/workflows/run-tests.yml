@@ -25,8 +25,5 @@ jobs:
           echo POSTGRES_PORT=${{ secrets.POSTGRES_PORT }} >> .env
       - name: Build docker
         run: docker compose up -d --build
-  test:
-    runs-on: ubuntu-latest
-    steps:
       - name: Test
-        run: docker-compose exec drf_test_task pytest
+        run : docker-compose exec drf_test_task pytest
