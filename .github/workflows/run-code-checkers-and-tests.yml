@@ -1,4 +1,4 @@
-name: Run tests
+name: Run tests, flake8, pylint, mypy, black
 on:
   push:
     branches:
@@ -25,5 +25,9 @@ jobs:
           echo POSTGRES_PORT=${{ secrets.POSTGRES_PORT }} >> .env
       - name: Build docker
         run: docker compose up -d --build
+      - name: Flake8 check
+        run: flake8 .
+      - name: Mypy check
+        run: mypy .
       - name: Test
         run : docker-compose exec -T drf_test_task pytest

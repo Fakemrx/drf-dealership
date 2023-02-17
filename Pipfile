@@ -9,6 +9,11 @@ djangorestframework = "*"
 psycopg2 = "*"
 pytest = "*"
 pytest-django = "*"
+flake8 = "*"
+mypy = "*"
+pylint = "*"
+black = "*"
+pre-commit = "*"
 
 [dev-packages]
 
