@@ -2,7 +2,7 @@ version: '3.9'
 
 services:
   drf_test_task:
-    image: drf_test_task_image:latest
+    build: .
     container_name: drf_tt_build
     restart: always
     command: python manage.py runserver 0.0.0.0:8000
@@ -15,7 +15,7 @@ services:
 
   db:
     image: postgres:15
-    container_name: drf_postgres
+    container_name: postgres_tt_container
     volumes:
       - pg_data:/var/lib/postgresql/data/
     env_file:

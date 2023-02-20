@@ -1,0 +1,33 @@
+name: Run tests, flake8, mypy
+on:
+  push:
+    branches:
+      [ master, develop ]
+  pull_request:
+    branches:
+      [ master, develop ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: create .env file
+        run: |
+          echo SECRET_KEY=${{ secrets.SECRET_KEY }} >> .env
+          echo DEBUG=${{ secrets.DEBUG }} >> .env
+          echo DATABASE=${{ secrets.DATABASE }} >> .env
+          echo POSTGRES_ENGINE=${{ secrets.POSTGRES_ENGINE }} >> .env
+          echo POSTGRES_DB=${{ secrets.POSTGRES_DB }} >> .env
+          echo POSTGRES_USER=${{ secrets.POSTGRES_USER }} >> .env
+          echo POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }} >> .env
+          echo POSTGRES_HOST=${{ secrets.POSTGRES_HOST }} >> .env
+          echo POSTGRES_PORT=${{ secrets.POSTGRES_PORT }} >> .env
+      - name: Build docker
+        run: docker compose up -d --build
+      - name: Test
+        run: docker-compose exec -T drf_test_task pytest
+      - name: Flake8 check
+        run: docker-compose exec -T drf_test_task flake8 .
+      - name: Mypy check
+        run: docker-compose exec -T drf_test_task mypy .
