@@ -11,9 +11,10 @@ pytest = "*"
 pytest-django = "*"
 flake8 = "*"
 mypy = "*"
-pylint = "*"
 black = "*"
 pre-commit = "*"
+pylint-django = "*"
+pylint = "*"
 
 [dev-packages]
 

@@ -1,4 +1,4 @@
-default_stages: [commit, push]
+default_stages: [commit]
 minimum_pre_commit_version: 2.10.1
 exclude: '.*/migrations/.*'
 
@@ -33,7 +33,7 @@ repos:
         types: [python]
     -   id: pylint
         name: pylint
-        entry: pylint
+        entry: pylint --load-plugins=pylint_django --django-settings-module=DRFTestTask.settings
         language: system
         types: [ python ]
         args:
