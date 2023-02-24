@@ -4,9 +4,8 @@ from django.db import models
 
 class Car(models.Model):
     """
-    Model of car, includes car brand, model, release year, types such as: car, fuel, gearbox,
-    drivetrain, engine, also engine volume, H.P., torque, seat places and car status
-    (active or not).
+    Model of car, includes car brand, model, release year, types such as: car, gearbox,
+    drivetrain, engine, also seat places and car status (active or not).
     """
 
     TYPE_CHOICES = (
