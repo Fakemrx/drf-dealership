@@ -96,6 +96,6 @@ def test_car_add_detail(car):
     assert response.status_code == status.HTTP_200_OK, "Should be 200"
     assert response.data[0] == serializer_data, "Should be equal"
 
-    response = c.get("/api/cars/1/")
+    response = c.get("/api/cars/2/")
     assert response.status_code == status.HTTP_200_OK, "Should be 200"
     assert response.data == serializer_data, "Should be equal"

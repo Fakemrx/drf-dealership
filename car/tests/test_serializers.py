@@ -49,7 +49,7 @@ def test_engine_serializer(engine):
 
 
 @pytest.mark.django_db
-def test_car_serializer(car):
+def test_car_serializer(car, engine):
     """Test function to check if CarSerializer works correctly."""
     serializer_data = CarSerializer(car).data
     expected_data = {
