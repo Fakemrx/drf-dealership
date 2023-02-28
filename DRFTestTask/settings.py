@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "django_filters",
     "rest_framework",
     "car",
 ]
@@ -96,6 +97,12 @@ DATABASES = {
         "HOST": POSTGRES_HOST,
         "PORT": POSTGRES_PORT,
     }
+}
+
+# Rest_framework settings
+
+REST_FRAMEWORK = {
+    "DEFAULT_FILTER_BACKENDS": ["django_filters.rest_framework.DjangoFilterBackend"]
 }
 
 # Password validation
