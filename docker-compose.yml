@@ -11,11 +11,11 @@ services:
     env_file:
       - .env
     depends_on:
-      - db
+      - postgres
     volumes:
       - ./:/usr/src/app
 
-  db:
+  postgres:
     image: postgres:15
     container_name: postgres_tt_container
     volumes:
