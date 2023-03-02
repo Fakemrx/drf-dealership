@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     "django_filters",
     "rest_framework",
     "car",
+    "buyer",
 ]
 
 MIDDLEWARE = [
