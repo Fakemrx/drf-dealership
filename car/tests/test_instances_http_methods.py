@@ -48,9 +48,9 @@ def test_post_car(engine):
         "engine": engine.id,
         "is_active": True,
     }
-    c.post("/api/cars/", new_data, format="json")
+    c.post("/api/car-app/cars/", new_data, format="json")
     expected_data = new_data
-    response = c.get("/api/cars/1/")
+    response = c.get("/api/car-app/cars/1/")
     assert response.status_code == status.HTTP_200_OK, "Should be 200"
     assert response.data == expected_data, "Should be equal"
 
@@ -67,8 +67,8 @@ def test_put_car(engine, car):
         "engine": engine.id,
         "is_active": False,
     }
-    c.put("/api/cars/2/", new_data, format="json")
-    response = c.get("/api/cars/2/")
+    c.put("/api/car-app/cars/2/", new_data, format="json")
+    response = c.get("/api/car-app/cars/2/")
     assert response.status_code == status.HTTP_200_OK, "Should be 200"
     assert response.data == new_data, "Should be equal"
 
@@ -89,8 +89,8 @@ def test_patch_car(engine, car):
         "engine": engine.id,
         "is_active": True,
     }
-    c.patch("/api/cars/3/", new_data, format="json")
-    response = c.get("/api/cars/3/")
+    c.patch("/api/car-app/cars/3/", new_data, format="json")
+    response = c.get("/api/car-app/cars/3/")
     assert response.status_code == status.HTTP_200_OK, "Should be 200"
     assert response.data == expected_data, "Should be equal"
 
@@ -98,10 +98,10 @@ def test_patch_car(engine, car):
 @pytest.mark.django_db
 def test_delete_car(car):
     """Testing DELETE method to delete car instance."""
-    response = c.get("/api/cars/4/")
+    response = c.get("/api/car-app/cars/4/")
     assert response.status_code == status.HTTP_200_OK, "Should be 200"
-    c.delete("/api/cars/4/")
-    response = c.get("/api/cars/4/")
+    c.delete("/api/car-app/cars/4/")
+    response = c.get("/api/car-app/cars/4/")
     assert response.status_code == status.HTTP_404_NOT_FOUND, "Should be 404"
 
 
@@ -116,9 +116,9 @@ def test_post_engine():
         "hp": 111,
         "is_active": True,
     }
-    c.post("/api/cars/engines/", new_data, format="json")
+    c.post("/api/car-app/engines/", new_data, format="json")
     expected_data = new_data
-    response = c.get("/api/cars/engines/5/")
+    response = c.get("/api/car-app/engines/5/")
     assert response.status_code == status.HTTP_200_OK, "Should be 200"
     assert response.data == expected_data, "Should be equal"
 
@@ -134,8 +134,8 @@ def test_put_engine(engine):
         "hp": 500,
         "is_active": True,
     }
-    c.put("/api/cars/engines/6/", new_data, format="json")
-    response = c.get("/api/cars/engines/6/")
+    c.put("/api/car-app/engines/6/", new_data, format="json")
+    response = c.get("/api/car-app/engines/6/")
     assert response.status_code == status.HTTP_200_OK, "Should be 200"
     assert response.data == new_data, "Should be equal"
 
@@ -152,8 +152,8 @@ def test_patch_engine(engine):
         "hp": 300,
         "is_active": False,
     }
-    c.patch("/api/cars/engines/7/", new_data, format="json")
-    response = c.get("/api/cars/engines/7/")
+    c.patch("/api/car-app/engines/7/", new_data, format="json")
+    response = c.get("/api/car-app/engines/7/")
     assert response.status_code == status.HTTP_200_OK, "Should be 200"
     assert response.data == expected_data, "Should be equal"
 
@@ -161,9 +161,9 @@ def test_patch_engine(engine):
 @pytest.mark.django_db
 def test_delete_engine(engine):
     """Testing DELETE method to delete engine instance."""
-    response = c.get("/api/cars/engines/8/")
+    response = c.get("/api/car-app/engines/8/")
     assert response.status_code == status.HTTP_200_OK, "Should be 200"
-    request = c.delete("/api/cars/engines/8/")
+    request = c.delete("/api/car-app/engines/8/")
     assert request.status_code == status.HTTP_204_NO_CONTENT, "Should be 204"
-    response = c.get("/api/cars/engines/8/")
+    response = c.get("/api/car-app/engines/8/")
     assert response.status_code == status.HTTP_404_NOT_FOUND, "Should be 404"
