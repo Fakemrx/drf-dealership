@@ -1,13 +1,6 @@
 """Module of CRUD APIViews for Engine model."""
 from rest_framework import filters
-from rest_framework.mixins import (
-    ListModelMixin,
-    CreateModelMixin,
-    UpdateModelMixin,
-    DestroyModelMixin,
-    RetrieveModelMixin,
-)
-from rest_framework.viewsets import GenericViewSet
+from rest_framework.viewsets import ModelViewSet
 from django_filters.rest_framework import DjangoFilterBackend
 
 from car.filters import EngineFilter
@@ -15,14 +8,7 @@ from car.models import Engine
 from car.serializers.engine_serializers import EngineSerializer
 
 
-class EngineAPIView(
-    GenericViewSet,
-    ListModelMixin,
-    CreateModelMixin,
-    RetrieveModelMixin,
-    UpdateModelMixin,
-    DestroyModelMixin,
-):
+class EngineAPIView(ModelViewSet):
     """APIView for CRUD operations with Engine model."""
 
     queryset = Engine.objects.all()
