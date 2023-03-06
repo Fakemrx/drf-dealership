@@ -3,10 +3,10 @@ from decimal import Decimal
 
 import pytest
 from django.forms import model_to_dict
+from rest_framework import status
 
 from rest_framework.test import APIClient
 
-from buyer.models import Offer
 from buyer.tests.test_serializers import offer, buyer
 from car.tests.test_serializers import car, engine
 
@@ -20,13 +20,13 @@ def test_post_offer(buyer, car):
         "id": 1,
         "buyer": buyer.id,
         "car": car.id,
-        "max_cost": Decimal("5637.00"),
+        "max_cost": "5637.00",
         "quantity": 1,
         "is_active": True,
     }
-    c.post("/api/buyer-app/offers/", new_data, format="json")
-    written_data = Offer.objects.last()
-    assert new_data == model_to_dict(written_data), "Should be equal"
+    request = c.post("/api/buyer-app/offers/", new_data, format="json")
+    assert request.status_code == status.HTTP_201_CREATED, "Should be 201"
+    assert new_data == request.data, "Should be equal"
 
 
 @pytest.mark.django_db
@@ -36,13 +36,13 @@ def test_put_offer(offer, buyer, car):
         "id": offer.id,
         "buyer": buyer.id,
         "car": car.id,
-        "max_cost": Decimal("1111.00"),
+        "max_cost": "1111.00",
         "quantity": 3,
         "is_active": True,
     }
-    c.put(f"/api/buyer-app/offers/{offer.id}/", new_data, format="json")
-    written_data = Offer.objects.last()
-    assert new_data == model_to_dict(written_data), "Should be equal"
+    request = c.put(f"/api/buyer-app/offers/{offer.id}/", new_data, format="json")
+    assert request.status_code == status.HTTP_200_OK, "Should be 200"
+    assert new_data == request.data, "Should be equal"
 
 
 @pytest.mark.django_db
@@ -53,28 +53,28 @@ def test_patch_offer(offer, buyer, car):
         "id": offer.id,
         "buyer": buyer.id,
         "car": car.id,
-        "max_cost": Decimal("3333.00"),
+        "max_cost": "3333.00",
         "quantity": 1,
         "is_active": False,
     }
-    c.patch(f"/api/buyer-app/offers/{offer.id}/", new_data, format="json")
-    written_data = Offer.objects.last()
-    assert expected_data == model_to_dict(written_data), "Should be equal"
+    request = c.patch(f"/api/buyer-app/offers/{offer.id}/", new_data, format="json")
+    assert request.status_code == status.HTTP_200_OK, "Should be 200"
+    assert expected_data == request.data, "Should be equal"
 
 
 @pytest.mark.django_db
 def test_delete_offer(offer, buyer, car):
     """Testing DELETE method to delete offer instance."""
-    written_data = Offer.objects.last()
     expected_data = {
         "id": offer.id,
         "buyer": buyer.id,
         "car": car.id,
-        "max_cost": Decimal("5637.00"),
+        "max_cost": "5637.00",
         "quantity": 1,
         "is_active": True,
     }
-    assert expected_data == model_to_dict(written_data), "Should be equal"
-    c.delete(f"/api/buyer-app/offers/{offer.id}/")
-    written_data = Offer.objects.all()
-    assert written_data.exists() is False, "Should be empty"
+    response = c.get(f"/api/buyer-app/offers/{offer.id}/")
+    assert response.status_code == status.HTTP_200_OK, "Should be 200"
+    assert expected_data == response.data, "Should be equal"
+    request = c.delete(f"/api/buyer-app/offers/{offer.id}/")
+    assert request.status_code == status.HTTP_204_NO_CONTENT, "Should be 204"

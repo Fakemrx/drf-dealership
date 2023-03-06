@@ -39,7 +39,7 @@ def test_post_buyer():
 
 
 @pytest.mark.django_db
-def test_put__buyer(buyer):
+def test_put_buyer(buyer):
     """Testing PUT method to update buyer instance."""
     new_data = {
         "id": buyer.id,
