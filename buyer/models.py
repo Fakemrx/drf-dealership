@@ -5,11 +5,16 @@ from django.db import models
 class Buyer(models.Model):
     """Model of buyer, includes full name, age, gender, balance, status (active or not)."""
 
-    GENDER_CHOICES = (("male", "Male"), ("female", "Female"))
+    class Genders(models.TextChoices):
+        """Gender types choices."""
+
+        male = ("male", "Male")
+        female = ("female", "Female")
+
     full_name = models.CharField(max_length=100, verbose_name="Full name")
     age = models.IntegerField(verbose_name="Age")
     gender = models.CharField(
-        max_length=6, choices=GENDER_CHOICES, verbose_name="Gender"
+        max_length=6, choices=Genders.choices, verbose_name="Gender"
     )
     balance = models.DecimalField(
         max_digits=8, decimal_places=2, verbose_name="Buyer's balance"

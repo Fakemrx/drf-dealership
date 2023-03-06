@@ -7,8 +7,8 @@ from rest_framework import status
 
 from rest_framework.test import APIClient
 
-from buyer.tests.test_serializers import offer, buyer
-from car.tests.test_serializers import car, engine
+from buyer.tests.buyer_app_fixtures import offer, buyer
+from car.tests.car_app_fixtures import car, engine
 
 c = APIClient()
 
@@ -24,7 +24,7 @@ def test_post_offer(buyer, car):
         "quantity": 1,
         "is_active": True,
     }
-    request = c.post("/api/buyer-app/offers/", new_data, format="json")
+    request = c.post("/api/buyer/offers/", new_data, format="json")
     assert request.status_code == status.HTTP_201_CREATED, "Should be 201"
     assert new_data == request.data, "Should be equal"
 
@@ -40,7 +40,7 @@ def test_put_offer(offer, buyer, car):
         "quantity": 3,
         "is_active": True,
     }
-    request = c.put(f"/api/buyer-app/offers/{offer.id}/", new_data, format="json")
+    request = c.put(f"/api/buyer/offers/{offer.id}/", new_data, format="json")
     assert request.status_code == status.HTTP_200_OK, "Should be 200"
     assert new_data == request.data, "Should be equal"
 
@@ -57,7 +57,7 @@ def test_patch_offer(offer, buyer, car):
         "quantity": 1,
         "is_active": False,
     }
-    request = c.patch(f"/api/buyer-app/offers/{offer.id}/", new_data, format="json")
+    request = c.patch(f"/api/buyer/offers/{offer.id}/", new_data, format="json")
     assert request.status_code == status.HTTP_200_OK, "Should be 200"
     assert expected_data == request.data, "Should be equal"
 
@@ -73,8 +73,8 @@ def test_delete_offer(offer, buyer, car):
         "quantity": 1,
         "is_active": True,
     }
-    response = c.get(f"/api/buyer-app/offers/{offer.id}/")
+    response = c.get(f"/api/buyer/offers/{offer.id}/")
     assert response.status_code == status.HTTP_200_OK, "Should be 200"
     assert expected_data == response.data, "Should be equal"
-    request = c.delete(f"/api/buyer-app/offers/{offer.id}/")
+    request = c.delete(f"/api/buyer/offers/{offer.id}/")
     assert request.status_code == status.HTTP_204_NO_CONTENT, "Should be 204"

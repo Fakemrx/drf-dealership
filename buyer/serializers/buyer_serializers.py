@@ -5,7 +5,7 @@ from buyer.models import Buyer
 
 
 class BuyerSerializer(serializers.ModelSerializer):
-    """Serializer for Car model."""
+    """Serializer for Buyer model."""
 
     class Meta:
         model = Buyer

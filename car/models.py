@@ -8,25 +8,26 @@ class Car(models.Model):
     drivetrain, engine, also seat places and car status (active or not).
     """
 
-    TYPE_CHOICES = (
-        ("suv", "SUV"),
-        ("sedan", "Sedan 4-d"),
-        ("coupe", "Coupe 2-d"),
-        ("sport", "Sportcar"),
-        ("hyper", "Hypercar"),
-        ("minivan", "Mini-van"),
-        ("van", "Van"),
-        ("truck", "Truck"),
-        ("wagon", "Wagon"),
-        ("muscle", "Musclecar"),
-        ("etc", "Etc."),
-    )
+    class CarTypes(models.TextChoices):
+        """Car types choices."""
+
+        suv = ("suv", "SUV")
+        sedan = ("sedan", "Sedan 4-d")
+        coupe = ("coupe", "Coupe 2-d")
+        sport = ("sport", "Sportcar")
+        hyper = ("hyper", "Hypercar")
+        minivan = ("minivan", "Mini-van")
+        van = ("van", "Van")
+        truck = ("truck", "Truck")
+        wagon = ("wagon", "Wagon")
+        muscle = ("muscle", "Musclecar")
+        etc = ("etc", "Etc.")
 
     car_brand = models.CharField(max_length=30, verbose_name="Car brand")
     car_model = models.CharField(max_length=50, verbose_name="Car model")
     release_year = models.IntegerField(verbose_name="Release year")
     car_type = models.CharField(
-        choices=TYPE_CHOICES, max_length=7, verbose_name="Car type"
+        choices=CarTypes.choices, max_length=7, verbose_name="Car type"
     )
     engine = models.ForeignKey("car.Engine", null=True, on_delete=models.SET_NULL)
 
@@ -42,17 +43,18 @@ class Engine(models.Model):
     engine type, volume, H.P., torque.
     """
 
-    TANK_CHOICES = (
-        ("gas", "Gasoline"),
-        ("diesel", "Diesel"),
-        ("hybrid", "Hybrid"),
-        ("electro", "Electro"),
-        ("etc", "Etc."),
-    )
+    class TankTypes(models.TextChoices):
+        """Tank types choices."""
+
+        gas = ("gas", "Gasoline")
+        diesel = ("diesel", "Diesel")
+        hybrid = ("hybrid", "Hybrid")
+        electro = ("electro", "Electro")
+        etc = ("etc", "Etc.")
 
     engine_brand = models.CharField(max_length=30, verbose_name="Engine brand")
     fuel_type = models.CharField(
-        choices=TANK_CHOICES, max_length=7, verbose_name="Fuel type"
+        choices=TankTypes.choices, max_length=7, verbose_name="Fuel type"
     )
     engine_volume = models.DecimalField(
         max_digits=3, decimal_places=1, verbose_name="Engine volume"

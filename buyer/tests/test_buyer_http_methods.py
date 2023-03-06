@@ -1,25 +1,13 @@
 """Buyer model testing module for correct responses, crud operations with data."""
 import pytest
-from django.forms import model_to_dict
+from rest_framework import status
 
 from rest_framework.test import APIClient
 
 from buyer.models import Buyer
+from buyer.tests.buyer_app_fixtures import buyer
 
 c = APIClient()
-
-
-@pytest.fixture
-def buyer():
-    """Fixture to add buyer instance."""
-    buyer = Buyer.objects.create(
-        full_name="F I O",
-        age=50,
-        gender="male",
-        balance=1111,
-        is_active=True,
-    )
-    return buyer
 
 
 @pytest.mark.django_db
@@ -30,12 +18,12 @@ def test_post_buyer():
         "full_name": "F I O",
         "age": 53,
         "gender": "male",
-        "balance": 1000,
+        "balance": "1000.00",
         "is_active": True,
     }
-    c.post("/api/buyer-app/buyers/", new_data, format="json")
-    written_data = Buyer.objects.last()
-    assert new_data == model_to_dict(written_data), "Should be equal"
+    request = c.post("/api/buyer/buyers/", new_data, format="json")
+    assert request.status_code == status.HTTP_201_CREATED, "Should be 201"
+    assert new_data == request.data, "Should be equal"
 
 
 @pytest.mark.django_db
@@ -46,44 +34,44 @@ def test_put_buyer(buyer):
         "full_name": "F I O",
         "age": 53,
         "gender": "male",
-        "balance": 1000,
+        "balance": "1000.00",
         "is_active": True,
     }
-    c.put(f"/api/buyer-app/buyers/{buyer.id}/", new_data, format="json")
-    written_data = Buyer.objects.last()
-    assert new_data == model_to_dict(written_data), "Should be equal"
+    request = c.put(f"/api/buyer/buyers/{buyer.id}/", new_data, format="json")
+    assert request.status_code == status.HTTP_200_OK, "Should be 200"
+    assert new_data == request.data, "Should be equal"
 
 
 @pytest.mark.django_db
 def test_patch_buyer(buyer):
     """Testing PATCH method to partial update buyer instance."""
-    new_data = {"full_name": "FI O O", "balance": 1500}
+    new_data = {"full_name": "FI O O", "balance": "1500.00"}
     expected_data = {
         "id": buyer.id,
         "full_name": "FI O O",
         "age": 50,
         "gender": "male",
-        "balance": 1500,
+        "balance": "1500.00",
         "is_active": True,
     }
-    c.patch(f"/api/buyer-app/buyers/{buyer.id}/", new_data, format="json")
-    written_data = Buyer.objects.last()
-    assert expected_data == model_to_dict(written_data), "Should be equal"
+    request = c.patch(f"/api/buyer/buyers/{buyer.id}/", new_data, format="json")
+    assert request.status_code == status.HTTP_200_OK, "Should be 200"
+    assert expected_data == request.data, "Should be equal"
 
 
 @pytest.mark.django_db
 def test_delete_buyer(buyer):
     """Testing DELETE method to delete buyer instance."""
-    written_data = Buyer.objects.last()
     expected_data = {
         "id": buyer.id,
         "full_name": "F I O",
         "age": 50,
         "gender": "male",
-        "balance": 1111,
+        "balance": "1111.00",
         "is_active": True,
     }
-    assert expected_data == model_to_dict(written_data), "Should be equal"
-    c.delete(f"/api/buyer-app/buyers/{buyer.id}/")
-    written_data = Buyer.objects.all()
-    assert written_data.exists() is False, "Should be empty"
+    response = c.get(f"/api/buyer/buyers/{buyer.id}/")
+    assert response.status_code == status.HTTP_200_OK, "Should be 200"
+    assert expected_data == response.data, "Should be equal"
+    request = c.delete(f"/api/buyer/buyers/{buyer.id}/")
+    assert request.status_code == status.HTTP_204_NO_CONTENT, "Should be 204"
