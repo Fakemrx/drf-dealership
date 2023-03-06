@@ -25,8 +25,12 @@ jobs:
           echo POSTGRES_PORT=${{ secrets.POSTGRES_PORT }} >> .env
       - name: Build docker
         run: docker compose up -d --build
-      - name: Test
-        run: docker-compose exec -T drf_test_task pytest
+      - name: Test initial functionality
+        run: docker-compose exec -T drf_test_task pytest tests
+      - name: Test car app
+        run: docker-compose exec -T drf_test_task pytest car
+      - name: Test buyer app
+        run: docker-compose exec -T drf_test_task pytest buyer
       - name: Flake8 check
         run: docker-compose exec -T drf_test_task flake8 .
       - name: Mypy check
