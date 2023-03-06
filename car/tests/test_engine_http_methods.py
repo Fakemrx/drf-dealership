@@ -14,7 +14,6 @@ c = APIClient()
 def test_post_engine():
     """Testing POST method to add engine instance."""
     new_data = {
-        "id": 5,
         "engine_brand": "Test-Brand",
         "fuel_type": "gas",
         "engine_volume": "1.5",
@@ -23,6 +22,7 @@ def test_post_engine():
     }
     request = c.post("/api/car/engines/", new_data, format="json")
     assert request.status_code == status.HTTP_201_CREATED, "Should be 201"
+    new_data["id"] = request.data["id"]
     assert new_data == request.data, "Should be equal"
 
 
