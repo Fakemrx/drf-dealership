@@ -1,36 +1,9 @@
 """Serializers testing module to check correct adding data through them"""
 import pytest
 
-from car.models import Engine, Car
 from car.serializers.car_serializers import CarSerializer
 from car.serializers.engine_serializers import EngineSerializer
-
-
-@pytest.fixture
-def engine():
-    """Fixture to add engine instance."""
-    engine = Engine.objects.create(
-        engine_brand="Test-Brand",
-        fuel_type="gas",
-        engine_volume=1.5,
-        hp=111,
-        is_active=True,
-    )
-    return engine
-
-
-@pytest.fixture
-def car(engine):
-    """Fixture to add car instance."""
-    car = Car.objects.create(
-        car_brand="Car test brand",
-        car_model="Test model",
-        release_year=2022,
-        car_type="suv",
-        engine=engine,
-        is_active=True,
-    )
-    return car
+from car.tests.car_app_fixtures import engine, car
 
 
 @pytest.mark.django_db
@@ -61,4 +34,4 @@ def test_car_serializer(car, engine):
         "engine": engine.id,
         "is_active": True,
     }
-    assert serializer_data == expected_data
+    assert serializer_data == expected_data, "Should be equal"
