@@ -22,4 +22,5 @@ urlpatterns = [
     path("api/", TemplateView.as_view(template_name="initial_page.html"), name="home"),
     path("api/car/", include("car.urls"), name="car"),
     path("api/buyer/", include("buyer.urls"), name="buyer"),
+    path("api/dealer/", include("dealership.urls"), name="dealer"),
 ]
