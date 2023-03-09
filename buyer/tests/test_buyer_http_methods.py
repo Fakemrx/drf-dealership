@@ -5,6 +5,7 @@ from rest_framework import status
 from rest_framework.test import APIClient
 
 from buyer.models import Buyer
+from buyer.serializers.buyer_serializers import BuyerSerializer
 from buyer.tests.buyer_app_fixtures import buyer
 
 c = APIClient()
@@ -40,6 +41,7 @@ def test_put_buyer(buyer):
     request = c.put(f"/api/buyer/buyers/{buyer.id}/", new_data, format="json")
     assert request.status_code == status.HTTP_200_OK, "Should be 200"
     assert new_data == request.data, "Should be equal"
+    assert new_data == BuyerSerializer(Buyer.objects.last()).data, "Should be equal"
 
 
 @pytest.mark.django_db
@@ -57,6 +59,9 @@ def test_patch_buyer(buyer):
     request = c.patch(f"/api/buyer/buyers/{buyer.id}/", new_data, format="json")
     assert request.status_code == status.HTTP_200_OK, "Should be 200"
     assert expected_data == request.data, "Should be equal"
+    assert (
+        expected_data == BuyerSerializer(Buyer.objects.last()).data
+    ), "Should be equal"
 
 
 @pytest.mark.django_db

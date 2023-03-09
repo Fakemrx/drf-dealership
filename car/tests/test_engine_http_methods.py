@@ -5,6 +5,8 @@ from rest_framework import status
 
 from rest_framework.test import APIClient
 
+from car.models import Engine
+from car.serializers.engine_serializers import EngineSerializer
 from car.tests.car_app_fixtures import engine
 
 c = APIClient()
@@ -40,6 +42,7 @@ def test_put_engine(engine):
     request = c.put(f"/api/car/engines/{engine.id}/", new_data, format="json")
     assert request.status_code == status.HTTP_200_OK, "Should be 200"
     assert new_data == request.data, "Should be equal"
+    assert new_data == EngineSerializer(Engine.objects.last()).data, "Should be equal"
 
 
 @pytest.mark.django_db
@@ -57,6 +60,9 @@ def test_patch_engine(engine):
     request = c.patch(f"/api/car/engines/{engine.id}/", new_data, format="json")
     assert request.status_code == status.HTTP_200_OK, "Should be 200"
     assert expected_data == request.data, "Should be equal"
+    assert (
+        expected_data == EngineSerializer(Engine.objects.last()).data
+    ), "Should be equal"
 
 
 @pytest.mark.django_db
