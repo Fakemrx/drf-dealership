@@ -5,8 +5,6 @@ from rest_framework import status
 
 from rest_framework.test import APIClient
 
-from car.models import Engine
-from car.serializers.engine_serializers import EngineSerializer
 from car.tests.car_app_fixtures import engine
 
 c = APIClient()
