@@ -4,26 +4,27 @@ from enum import Enum
 from django.db import models
 
 
+class CarTypes(Enum):
+    """Car types choices."""
+
+    suv = "SUV"
+    sedan = "Sedan 4-d"
+    coupe = "Coupe 2-d"
+    sport = "Sportcar"
+    hyper = "Hypercar"
+    minivan = "Mini-van"
+    van = "Van"
+    truck = "Truck"
+    wagon = "Wagon"
+    muscle = "Musclecar"
+    etc = "Etc."
+
+
 class Car(models.Model):
     """
     Model of car, includes car brand, model, release year, types such as: car, gearbox,
     drivetrain, engine, also seat places and car status (active or not).
     """
-
-    class CarTypes(Enum):
-        """Car types choices."""
-
-        suv = "SUV"
-        sedan = "Sedan 4-d"
-        coupe = "Coupe 2-d"
-        sport = "Sportcar"
-        hyper = "Hypercar"
-        minivan = "Mini-van"
-        van = "Van"
-        truck = "Truck"
-        wagon = "Wagon"
-        muscle = "Musclecar"
-        etc = "Etc."
 
     car_brand = models.CharField(max_length=30, verbose_name="Car brand")
     car_model = models.CharField(max_length=50, verbose_name="Car model")
@@ -41,20 +42,21 @@ class Car(models.Model):
         return f"{self.car_brand} {self.car_model} {self.release_year}"
 
 
+class TankTypes(Enum):
+    """Tank types choices."""
+
+    gas = "Gasoline"
+    diesel = "Diesel"
+    hybrid = "Hybrid"
+    electro = "Electro"
+    etc = "Etc."
+
+
 class Engine(models.Model):
     """
     Model of engine, attached to some cars, includes fuel type,
     engine type, volume, H.P., torque.
     """
-
-    class TankTypes(Enum):
-        """Tank types choices."""
-
-        gas = "Gasoline"
-        diesel = "Diesel"
-        hybrid = "Hybrid"
-        electro = "Electro"
-        etc = "Etc."
 
     engine_brand = models.CharField(max_length=30, verbose_name="Engine brand")
     fuel_type = models.CharField(

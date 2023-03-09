@@ -45,7 +45,8 @@ def test_put_offer(offer, buyer, car):
     request = c.put(f"/api/buyer/offers/{offer.id}/", new_data, format="json")
     assert request.status_code == status.HTTP_200_OK, "Should be 200"
     assert new_data == request.data, "Should be equal"
-    assert new_data == OfferSerializer(Offer.objects.last()).data, "Should be equal"
+    response = c.get(f"/api/buyer/offers/{offer.id}/")
+    assert new_data == response.data, "Should be equal"
 
 
 @pytest.mark.django_db
@@ -63,9 +64,8 @@ def test_patch_offer(offer, buyer, car):
     request = c.patch(f"/api/buyer/offers/{offer.id}/", new_data, format="json")
     assert request.status_code == status.HTTP_200_OK, "Should be 200"
     assert expected_data == request.data, "Should be equal"
-    assert (
-        expected_data == OfferSerializer(Offer.objects.last()).data
-    ), "Should be equal"
+    response = c.get(f"/api/buyer/offers/{offer.id}/")
+    assert expected_data == response.data, "Should be equal"
 
 
 @pytest.mark.django_db

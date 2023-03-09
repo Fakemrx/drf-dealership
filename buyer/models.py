@@ -4,14 +4,15 @@ from enum import Enum
 from django.db import models
 
 
+class Genders(Enum):
+    """Gender types choices."""
+
+    male = "Male"
+    female = "Female"
+
+
 class Buyer(models.Model):
     """Model of buyer, includes full name, age, gender, balance, status (active or not)."""
-
-    class Genders(Enum):
-        """Gender types choices."""
-
-        male = "Male"
-        female = "Female"
 
     full_name = models.CharField(max_length=100, verbose_name="Full name")
     age = models.IntegerField(verbose_name="Age")

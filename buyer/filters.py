@@ -1,14 +1,15 @@
 """Custom filters for buyer app."""
 from django_filters import rest_framework as filters
 
-from buyer.models import Buyer, Offer
+from buyer.models import Buyer, Offer, Genders
 
 
 class BuyerFilter(filters.FilterSet):
     """Custom filtering for Buyer model list."""
 
-    gender_choices = (("male", "Male"), ("female", "Female"))
-    gender = filters.ChoiceFilter(choices=gender_choices)
+    gender = filters.ChoiceFilter(
+        choices=[(gender.name, gender.value) for gender in Genders]
+    )
     age = filters.RangeFilter()
     balance = filters.RangeFilter()
     is_active = filters.BooleanFilter()
