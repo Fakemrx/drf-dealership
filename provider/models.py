@@ -12,9 +12,12 @@ class Provider(models.Model):
     is_active = models.BooleanField(verbose_name="Is active")
 
     def __str__(self):
+        result = f"{self.name} | {self.foundation_year} | "
         if self.is_active is False:
-            return f"{self.name} | {self.foundation_year} | Inactive"
-        return f"{self.name} | {self.foundation_year} | Active"
+            result += "Inactive"
+        else:
+            result += "Active"
+        return result
 
 
 class CarsInProviderStock(models.Model):
