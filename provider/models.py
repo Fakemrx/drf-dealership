@@ -18,8 +18,8 @@ class Provider(models.Model):
         else:
             result += "Active"
         return result
-
-
+        
+        
 class CarsInProviderStock(models.Model):
     """
     Model of availability cars in providers stock, includes provider referenced to Provider model,
