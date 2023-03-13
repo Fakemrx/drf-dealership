@@ -15,3 +15,21 @@ class Provider(models.Model):
         if self.is_active is False:
             return f"{self.name} | {self.foundation_year} | Inactive"
         return f"{self.name} | {self.foundation_year} | Active"
+
+
+class CarsInProviderStock(models.Model):
+    """
+    Model of availability cars in providers stock, includes provider referenced to Provider model,
+    car referenced to Car model from Car app, price of each vehicle.
+    """
+
+    provider = models.ForeignKey(
+        Provider, on_delete=models.CASCADE, verbose_name="Dealership"
+    )
+    car = models.ForeignKey("car.Car", on_delete=models.CASCADE, verbose_name="Car")
+    price = models.DecimalField(
+        max_digits=8, decimal_places=2, verbose_name="Car price"
+    )
+
+    def __str__(self):
+        return f"Provider {self.provider.name} has {self.car}. Price: {self.price}"
