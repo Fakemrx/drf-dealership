@@ -17,6 +17,7 @@ pylint-django = "*"
 pylint = "*"
 coverage = "*"
 django-filter = "*"
+djangorestframework-simplejwt = "*"
 
 [dev-packages]
 
