@@ -1,4 +1,5 @@
 """Models of provider app."""
+from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 
 
@@ -18,12 +19,11 @@ class Provider(models.Model):
         else:
             result += "Active"
         return result
-        
-        
+
+
 class CarsInProviderStock(models.Model):
     """
-    Model of availability cars in providers stock, includes provider referenced to Provider model,
-    car referenced to Car model from Car app, price of each vehicle.
+    Model of availability cars in providers stock, includes a provider, car, price of each vehicle.
     """
 
     provider = models.ForeignKey(
@@ -36,3 +36,24 @@ class CarsInProviderStock(models.Model):
 
     def __str__(self):
         return f"Provider {self.provider.name} has {self.car}. Price: {self.price}"
+
+
+class ProviderDiscounts(models.Model):
+    """
+    Model of discounts, includes a provider, car, discount dates,
+    discount in percentage, name of discount and description.
+    """
+
+    PERCENTAGE_VALIDATOR = [MinValueValidator(0), MaxValueValidator(100)]
+    provider = models.ForeignKey(
+        Provider, on_delete=models.CASCADE, verbose_name="Provider"
+    )
+    car = models.ForeignKey("car.Car", on_delete=models.CASCADE, verbose_name="Car")
+    discount_dates = models.DurationField(verbose_name="Dates of promotion")
+    discount = models.DecimalField(
+        max_digits=3, decimal_places=0, validators=PERCENTAGE_VALIDATOR
+    )
+    name = models.CharField(max_length=100, verbose_name="Promotion naming")
+    description = models.CharField(
+        max_length=1000, verbose_name="Promotion description"
+    )
