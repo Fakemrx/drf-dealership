@@ -19,6 +19,7 @@ c = APIClient()
 def test_get_dealership(dealership):
     """Testing GET method to get detailed dealership instance."""
     expected_data = {
+        "id": dealership.id,
         "name": "Test dealership",
         "location": "HT",
         "balance": "1000.00",

@@ -13,6 +13,9 @@ class CarDealership(models.Model):
     balance = models.DecimalField(
         max_digits=10, decimal_places=2, verbose_name="Car dealership's balance"
     )
+    preferred_cars_list = models.ManyToManyField(
+        "car.Car",
+    )
     is_active = models.BooleanField(verbose_name="Is active")
 
     def __str__(self):
