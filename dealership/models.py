@@ -5,7 +5,8 @@ from django_countries.fields import CountryField
 
 class CarDealership(models.Model):
     """
-    Model of car dealership, includes name, location, balance and status (active or not).
+    Model of car dealership, includes name, location, balance, preferred
+    cars list and status (active or not).
     """
 
     name = models.CharField(max_length=100, verbose_name="Naming")
@@ -14,7 +15,7 @@ class CarDealership(models.Model):
         max_digits=10, decimal_places=2, verbose_name="Car dealership's balance"
     )
     preferred_cars_list = models.ManyToManyField(
-        "car.Car",
+        "car.Car", verbose_name="List of preferred cars"
     )
     is_active = models.BooleanField(verbose_name="Is active")
 

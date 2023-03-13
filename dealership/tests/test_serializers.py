@@ -14,6 +14,9 @@ def test_dealership_serializer(dealership):
         "name": "Test dealership",
         "location": "HT",
         "balance": "1000.00",
+        "preferred_cars_list": [
+            dealership.preferred_cars_list.values_list("id", flat=True)[0]
+        ],
         "is_active": True,
     }
     assert serializer_data == expected_data, "Should be equal"

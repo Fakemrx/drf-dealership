@@ -23,7 +23,10 @@ def test_get_dealership(dealership):
         "name": "Test dealership",
         "location": "HT",
         "balance": "1000.00",
-        "is_active": False,
+        "preferred_cars_list": [
+            dealership.preferred_cars_list.values_list("id", flat=True)[0]
+        ],
+        "is_active": True,
     }
     request = c.get(f"/api/dealer/dealerships/{dealership.id}/")
     assert request.status_code == status.HTTP_200_OK, "Should be 200"
