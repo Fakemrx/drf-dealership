@@ -14,3 +14,11 @@ class CarDealership(models.Model):
         max_digits=10, decimal_places=2, verbose_name="Car dealership's balance"
     )
     is_active = models.BooleanField(verbose_name="Is active")
+
+    def __str__(self):
+        result = f"{self.name} | {self.location} | {self.balance} | "
+        if self.is_active is False:
+            result += "Inactive"
+        else:
+            result += "Active"
+        return result
