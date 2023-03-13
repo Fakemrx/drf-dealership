@@ -13,5 +13,6 @@ if [ "$DATABASE" = "postgres" ]
 fi
 
 python manage.py migrate
+python manage.py createsuperuser --noinput
 
 exec "$@"
