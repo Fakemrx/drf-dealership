@@ -1,5 +1,6 @@
 """Fixtures for buyer app"""
 import pytest
+from django.contrib.auth.models import User
 
 from buyer.models import Buyer, Offer
 from car.tests.car_app_fixtures import car, engine
@@ -7,13 +8,13 @@ from car.tests.car_app_fixtures import car, engine
 
 @pytest.fixture
 def buyer():
-    """Fixture to add buyer instance."""
+    """Fixture to add user & buyer instance."""
+    user = User.objects.create(username="TestUser", password="12344321")
     buyer = Buyer.objects.create(
-        full_name="F I O",
-        age=50,
+        account=user,
+        full_name="Full Name Str",
+        age=25,
         gender="male",
-        balance=1111,
-        is_active=True,
     )
     return buyer
 

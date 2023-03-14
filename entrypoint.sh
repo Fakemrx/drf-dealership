@@ -1,6 +1,6 @@
 #!/bin/sh
 
-echo "Trying to launch psql"
+echo "--------------- Launching PSQL ---------------"
 if [ "$DATABASE" = "postgres" ]
   then
     echo "Waiting for psql"
@@ -9,9 +9,16 @@ if [ "$DATABASE" = "postgres" ]
       sleep 1
     done
 
-    echo "Psql started"
+    echo "--------------- PSQL started ---------------"
 fi
 
+echo "--------------- Running migrations ---------------"
 python manage.py migrate
+echo "--------------- Migrations done ---------------"
+
+echo "--------------- Creating default superuser ---------------"
+python manage.py createsuperuser --noinput
+echo "Username: " $DJANGO_SUPERUSER_USERNAME
+echo "Password: " $DJANGO_SUPERUSER_PASSWORD
 
 exec "$@"
