@@ -15,6 +15,7 @@ fi
 echo "--------------- Running migrations ---------------"
 python manage.py migrate
 echo "--------------- Migrations done ---------------"
+
 echo "--------------- Creating default superuser ---------------"
 python manage.py createsuperuser --noinput
 echo "Username: " $DJANGO_SUPERUSER_USERNAME

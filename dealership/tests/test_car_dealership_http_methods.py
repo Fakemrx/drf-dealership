@@ -10,7 +10,7 @@ from rest_framework.test import APIClient
 
 from dealership.models import CarDealership
 from dealership.serializers.car_dealership_serializers import CarDealershipSerializer
-from dealership.tests.dealership_app_fixtures import dealership
+from tests.project_fixtures import dealership, car, engine
 
 c = APIClient()
 
@@ -20,12 +20,14 @@ def test_get_dealership(dealership):
     """Testing GET method to get detailed dealership instance."""
     expected_data = {
         "id": dealership.id,
-        "name": "Test dealership",
+        "name": "Test dealer",
         "location": "HT",
-        "balance": "1000.00",
-        "preferred_cars_list": [
-            dealership.preferred_cars_list.values_list("id", flat=True)[0]
-        ],
+        "balance": "2000.00",
+        "preferred_cars_list": [],
+        "preferred_car_release_year_from": 2010,
+        "preferred_car_release_year_to": 2015,
+        "preferred_car_type": "sedan",
+        "preferred_fuel_type": "gas",
         "is_active": True,
     }
     request = c.get(f"/api/dealer/dealerships/{dealership.id}/")
