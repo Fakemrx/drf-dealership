@@ -7,7 +7,7 @@ from rest_framework.test import APIClient
 
 from car.models import Car
 from car.serializers.car_serializers import CarSerializer
-from car.tests.car_app_fixtures import car, engine
+from tests.project_fixtures import car, engine
 
 c = APIClient()
 

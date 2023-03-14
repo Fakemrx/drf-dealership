@@ -3,8 +3,7 @@ import pytest
 
 from buyer.serializers.buyer_serializers import BuyerSerializer
 from buyer.serializers.offer_serializers import OfferSerializer
-from buyer.tests.buyer_app_fixtures import buyer, offer
-from car.tests.car_app_fixtures import car, engine
+from tests.project_fixtures import buyer, offer, car, engine
 
 
 @pytest.mark.django_db
@@ -13,10 +12,11 @@ def test_buyer_serializer(buyer):
     serializer_data = BuyerSerializer(buyer).data
     expected_data = {
         "id": buyer.id,
+        "account": buyer.account.id,
         "full_name": "F I O",
         "age": 50,
         "gender": "male",
-        "balance": "1111.00",
+        "balance": "0.00",
         "is_active": True,
     }
     assert serializer_data == expected_data, "Should be equal"

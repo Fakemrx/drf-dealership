@@ -3,7 +3,7 @@ import pytest
 
 from car.serializers.car_serializers import CarSerializer
 from car.serializers.engine_serializers import EngineSerializer
-from car.tests.car_app_fixtures import engine, car
+from tests.project_fixtures import engine, car
 
 
 @pytest.mark.django_db
