@@ -14,6 +14,8 @@ fi
 
 echo "--------------- Running migrations ---------------"
 python manage.py migrate
+python manage.py createsuperuser --noinput
+
 echo "--------------- Migrations done ---------------"
 
 echo "--------------- Creating default superuser ---------------"
