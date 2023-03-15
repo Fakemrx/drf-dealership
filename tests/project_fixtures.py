@@ -64,17 +64,17 @@ def offer(car, buyer):
     )
     return offer
     
-@pytest.fixture
-def dealership():
-    """Fixture to add CarDealership instance."""
-    dealership = CarDealership.objects.create(
-        name="Test dealer",
-        location="HT",
-        balance=2000.00,
-        preferred_car_release_year_from=2010,
-        preferred_car_release_year_to=2015,
-        preferred_car_type="sedan",
-        preferred_fuel_type="gas",
-        is_active=True,
-    )
-    return dealership
+#   @pytest.fixture
+#   def dealership():
+#       """Fixture to add CarDealership instance."""
+#       dealership = CarDealership.objects.create(
+#           name="Test dealer",
+#           location="HT",
+#           balance=2000.00,
+#           preferred_car_release_year_from=2010,
+#           preferred_car_release_year_to=2015,
+#           preferred_car_type="sedan",
+#           preferred_fuel_type="gas",
+#           is_active=True,
+#       )
+#       return dealership
