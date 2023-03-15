@@ -1,9 +1,11 @@
 """Fixtures for all project tests"""
 import pytest
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 
 from car.models import Engine, Car
 from buyer.models import Buyer, Offer
+
+User = get_user_model()
 
 
 @pytest.fixture
@@ -41,11 +43,12 @@ def buyer():
         password="TestPass123",
         email="test@pytest.io",
     )
-    buyer = Buyer.objects.get(account=user)
-    buyer.full_name = "F I O"
-    buyer.age = 50
-    buyer.gender = "male"
-    buyer.save()
+    buyer = Buyer.objects.create(
+        account=user,
+        full_name="F I O",
+        age=50,
+        gender="male",
+    )
     return buyer
 
 

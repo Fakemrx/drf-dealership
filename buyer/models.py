@@ -1,10 +1,10 @@
 """Models of Buyer app."""
 from enum import Enum
 
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from django.db import models
-from django.db.models.signals import post_save
-from django.dispatch import receiver
+
+User = get_user_model()
 
 
 class Genders(Enum):
@@ -32,14 +32,6 @@ class Buyer(models.Model):
 
     def __str__(self):
         return f"{self.full_name} | {self.balance} USD | {self.is_active}"
-
-
-@receiver(post_save, sender=User)
-def update_buyer_signal(sender, instance, created, **kwargs):
-    """Signal sender to create buyer instance after user instance was created"""
-    if created:
-        Buyer.objects.create(account=instance)
-    instance.buyer.save()
 
 
 class Offer(models.Model):

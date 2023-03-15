@@ -1,15 +1,15 @@
 """Module of CRUD APIViews for Buyer model."""
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters
-from rest_framework.mixins import RetrieveModelMixin, ListModelMixin
+from rest_framework.mixins import RetrieveModelMixin, ListModelMixin, CreateModelMixin
 from rest_framework.viewsets import GenericViewSet
 
 from buyer.filters import BuyerFilter
 from buyer.models import Buyer
-from buyer.serializers.buyer_serializers import BuyerSerializer
+from buyer.serializers.buyer_serializers import BuyerSerializer, UserSerializer
 
 
-class BuyerAPIView(GenericViewSet, RetrieveModelMixin, ListModelMixin):
+class BuyerRetrieveAPIView(GenericViewSet, RetrieveModelMixin, ListModelMixin):
     """APIView for list and detail operations with Buyer model."""
 
     queryset = Buyer.objects.all()
@@ -23,3 +23,10 @@ class BuyerAPIView(GenericViewSet, RetrieveModelMixin, ListModelMixin):
     ordering_fields = ["age", "balance"]
     ordering = ["balance"]
     filterset_class = BuyerFilter
+
+
+class UserAPIView(GenericViewSet, CreateModelMixin):
+    """APIView for create operation with User-Buyer model."""
+
+    queryset = Buyer.objects.all()
+    serializer_class = UserSerializer
