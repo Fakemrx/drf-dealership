@@ -9,8 +9,7 @@ from rest_framework.test import APIClient
 
 from buyer.models import Offer
 from buyer.serializers.offer_serializers import OfferSerializer
-from buyer.tests.buyer_app_fixtures import offer, buyer
-from car.tests.car_app_fixtures import car, engine
+from tests.project_fixtures import offer, buyer, car, engine
 
 c = APIClient()
 

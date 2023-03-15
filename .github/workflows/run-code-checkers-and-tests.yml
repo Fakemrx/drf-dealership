@@ -26,7 +26,7 @@ jobs:
       - name: Build docker
         run: docker compose up -d --build
       - name: Tests
-        run: docker-compose exec -T drf_test_task pytest
+        run: docker-compose exec -T drf_test_task pytest -vv
       - name: Flake8 check
         run: docker-compose exec -T drf_test_task flake8 .
       - name: Mypy check
