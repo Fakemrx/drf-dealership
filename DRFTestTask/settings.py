@@ -41,8 +41,11 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "django_filters",
     "rest_framework",
+    "django_countries",
     "car",
     "buyer",
+    "provider",
+    "dealership",
 ]
 
 MIDDLEWARE = [
