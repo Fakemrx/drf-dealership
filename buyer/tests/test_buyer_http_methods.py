@@ -6,7 +6,7 @@ from rest_framework.test import APIClient
 
 from buyer.models import Buyer
 from buyer.serializers.buyer_serializers import BuyerSerializer
-from buyer.tests.buyer_app_fixtures import buyer
+from tests.project_fixtures import buyer
 
 c = APIClient()
 
