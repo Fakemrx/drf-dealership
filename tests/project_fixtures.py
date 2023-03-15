@@ -4,6 +4,7 @@ from django.contrib.auth import get_user_model
 
 from car.models import Engine, Car
 from buyer.models import Buyer, Offer
+from dealership.models import CarDealership
 
 User = get_user_model()
 
@@ -63,18 +64,19 @@ def offer(car, buyer):
         is_active=True,
     )
     return offer
-    
-#   @pytest.fixture
-#   def dealership():
-#       """Fixture to add CarDealership instance."""
-#       dealership = CarDealership.objects.create(
-#           name="Test dealer",
-#           location="HT",
-#           balance=2000.00,
-#           preferred_car_release_year_from=2010,
-#           preferred_car_release_year_to=2015,
-#           preferred_car_type="sedan",
-#           preferred_fuel_type="gas",
-#           is_active=True,
-#       )
-#       return dealership
+
+
+@pytest.fixture
+def dealership():
+    """Fixture to add CarDealership instance."""
+    dealership = CarDealership.objects.create(
+        name="Test dealer",
+        location="HT",
+        balance=2000.00,
+        preferred_car_release_year_from=2010,
+        preferred_car_release_year_to=2015,
+        preferred_car_type="sedan",
+        preferred_fuel_type="gas",
+        is_active=True,
+    )
+    return dealership
