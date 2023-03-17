@@ -3,6 +3,7 @@ version: '3.9'
 services:
   drf_test_task:
     build: .
+    entrypoint: /usr/src/app/entrypoint.sh
     container_name: drf_cont
     restart: always
     command: python manage.py runserver 0.0.0.0:8000
