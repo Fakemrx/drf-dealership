@@ -18,6 +18,8 @@ pylint = "*"
 coverage = "*"
 django-filter = "*"
 django-countries = "*"
+celery = "*"
+redis = "*"
 
 [dev-packages]
 

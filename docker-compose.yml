@@ -7,21 +7,45 @@ services:
     restart: always
     command: python manage.py runserver 0.0.0.0:8000
     ports:
-      - 8000:8000
+      - 1337:8000
     env_file:
       - .env
     depends_on:
       - postgres
+      - redis
     volumes:
       - ./:/usr/src/app
 
   postgres:
-    image: postgres:15
+    image: postgres:alpine
     container_name: postgres_tt_container
     volumes:
       - pg_data:/var/lib/postgresql/data/
     env_file:
       - .env
+
+  redis:
+    image: redis:alpine
+
+  celery:
+    build: .
+    command: celery -A DRFTestTask worker -l info
+    volumes:
+      - ./:/usr/src/app/
+    env_file:
+      - .env
+    depends_on:
+      - redis
+
+  celery-beat:
+    build: .
+    command: celery -A DRFTestTask beat -l info
+    volumes:
+      - ./:/usr/src/app/
+    env_file:
+      - .env
+    depends_on:
+      - redis
 
 volumes:
   pg_data:
