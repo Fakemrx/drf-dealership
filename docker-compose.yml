@@ -3,22 +3,49 @@ version: '3.9'
 services:
   drf_test_task:
     build: .
-    container_name: drf_tt_build
+    container_name: drf_cont
     restart: always
     command: python manage.py runserver 0.0.0.0:8000
     ports:
-      - 1337:8000
+      - 8000:8000
     env_file:
       - .env
     depends_on:
       - postgres
-      - redis
     volumes:
       - ./:/usr/src/app
 
+  celery:
+    build: .
+    container_name: celery_cont
+    command: celery -A DRFTestTask worker -l info
+    volumes:
+      - ./:/usr/src/app/
+    links:
+      - redis
+    env_file:
+      - .env
+    depends_on:
+      - drf_test_task
+      - postgres
+      - redis
+
+  celery-beat:
+    build: .
+    container_name: celery_beat_cont
+    command: celery -A DRFTestTask beat -l info
+    volumes:
+      - ./:/usr/src/app/
+    env_file:
+      - .env
+    depends_on:
+      - drf_test_task
+      - postgres
+      - redis
+
   postgres:
     image: postgres:alpine
-    container_name: postgres_tt_container
+    container_name: psql_cont
     volumes:
       - pg_data:/var/lib/postgresql/data/
     env_file:
@@ -26,26 +53,7 @@ services:
 
   redis:
     image: redis:alpine
-
-  celery:
-    build: .
-    command: celery -A DRFTestTask worker -l info
-    volumes:
-      - ./:/usr/src/app/
-    env_file:
-      - .env
-    depends_on:
-      - redis
-
-  celery-beat:
-    build: .
-    command: celery -A DRFTestTask beat -l info
-    volumes:
-      - ./:/usr/src/app/
-    env_file:
-      - .env
-    depends_on:
-      - redis
+    container_name: redis_cont
 
 volumes:
   pg_data:
