@@ -39,7 +39,10 @@ class Car(models.Model):
     is_active = models.BooleanField(default=True, verbose_name="Is active")
 
     def __str__(self):
-        return f"{self.car_brand} {self.car_model} {self.release_year}"
+        return (
+            f"Car {self.car_brand} {self.car_model} {self.release_year} | Type: "
+            f"{CarTypes[f'{self.car_type}'].value} | Engine: {self.engine}"
+        )
 
 
 class TankTypes(Enum):

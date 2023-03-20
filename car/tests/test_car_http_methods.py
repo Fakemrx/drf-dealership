@@ -26,6 +26,7 @@ def test_post_car(engine):
     request = c.post("/api/car/cars/", new_data, format="json")
     assert request.status_code == status.HTTP_201_CREATED, "Should be 201"
     new_data["id"] = request.data["id"]
+    new_data["engine"] = str(engine)
     assert new_data == request.data, "Should be equal"
 
 
@@ -43,6 +44,7 @@ def test_put_car(engine, car):
     }
     request = c.put(f"/api/car/cars/{car.id}/", new_data, format="json")
     assert request.status_code == status.HTTP_200_OK, "Should be 200"
+    new_data["engine"] = str(engine)
     assert new_data == request.data, "Should be equal"
     assert new_data == CarSerializer(Car.objects.get(id=car.id)).data, "Should be equal"
 
@@ -60,7 +62,7 @@ def test_patch_car(engine, car):
         "car_model": "Test model",
         "release_year": 2024,
         "car_type": "suv",
-        "engine": engine.id,
+        "engine": str(engine),
         "is_active": True,
     }
     request = c.patch(f"/api/car/cars/{car.id}/", new_data, format="json")
@@ -80,7 +82,7 @@ def test_delete_car(car, engine):
         "car_model": "Test model",
         "release_year": 2022,
         "car_type": "suv",
-        "engine": engine.id,
+        "engine": str(engine),
         "is_active": True,
     }
     response = c.get(f"/api/car/cars/{car.id}/")

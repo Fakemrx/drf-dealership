@@ -31,7 +31,7 @@ def test_car_serializer(car, engine):
         "car_model": "Test model",
         "release_year": 2022,
         "car_type": "suv",
-        "engine": engine.id,
+        "engine": str(engine),
         "is_active": True,
     }
     assert serializer_data == expected_data, "Should be equal"

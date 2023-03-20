@@ -1,5 +1,4 @@
 """Models of provider app."""
-from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 
 
@@ -41,19 +40,27 @@ class CarsInProviderStock(models.Model):
 class ProviderDiscounts(models.Model):
     """
     Model of discounts, includes a provider, car, discount dates,
-    discount in percentage, name of discount and description.
+    price during discount, name of discount and description.
     """
 
-    PERCENTAGE_VALIDATOR = [MinValueValidator(0), MaxValueValidator(100)]
     provider = models.ForeignKey(
         Provider, on_delete=models.CASCADE, verbose_name="Provider"
     )
-    car = models.ForeignKey("car.Car", on_delete=models.CASCADE, verbose_name="Car")
-    discount_dates = models.DurationField(verbose_name="Dates of promotion")
-    discount = models.DecimalField(
-        max_digits=3, decimal_places=0, validators=PERCENTAGE_VALIDATOR
+    car = models.ForeignKey(
+        CarsInProviderStock, on_delete=models.CASCADE, verbose_name="Car in stock"
+    )
+    discount_date_from = models.DateField(verbose_name="Date of promotion start")
+    discount_date_to = models.DateField(verbose_name="Date of promotion ending")
+    price_during_discount = models.DecimalField(
+        max_digits=8, decimal_places=2, verbose_name="Car price during discount"
     )
     name = models.CharField(max_length=100, verbose_name="Promotion naming")
     description = models.CharField(
         max_length=1000, verbose_name="Promotion description"
     )
+
+    def __str__(self):
+        return (
+            f"{self.provider.name} have a discount from {self.discount_date_from} to "
+            f"{self.discount_date_to} a {self.car.car} - {self.price_during_discount} USD"
+        )
