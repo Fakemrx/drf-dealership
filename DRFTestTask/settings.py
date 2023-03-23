@@ -160,8 +160,10 @@ REST_FRAMEWORK = {
 }
 
 # Celery settings
-CELERY_BROKER_URL = "redis://redis:6379"
-CELERY_RESULT_BACKEND = "redis://redis:6379"
+CELERY_BROKER_URL = os.environ.get("CELERY_BROKER_URL", default="redis://redis:6379")
+CELERY_RESULT_BACKEND = os.environ.get(
+    "CELERY_RESULT_BACKEND", default="redis://redis:6379"
+)
 
 # Celery-beat settings
 CELERY_BEAT_SCHEDULE = {
