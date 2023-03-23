@@ -2,6 +2,7 @@
 from django.contrib.auth import get_user_model
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters, status
+from rest_framework.authtoken.models import Token
 from rest_framework.mixins import RetrieveModelMixin, ListModelMixin
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -38,6 +39,12 @@ class RegistrationAPIView(APIView):
 
     def post(self, request):
         """Post method to create User-Buyer instances."""
-        RegistrationSerializer(data=request.data).is_valid(raise_exception=True)
-        create_buyer_and_user(request)
-        return Response(data=request.data, status=status.HTTP_201_CREATED)
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        validated_data = serializer.data
+        create_buyer_and_user(validated_data)
+        user = User.objects.get(id=validated_data["id"])
+        token = Token.objects.get_or_create(user=user)[0]
+        return Response(
+            {"token": str(token), "user_id": user.id}, status=status.HTTP_201_CREATED
+        )

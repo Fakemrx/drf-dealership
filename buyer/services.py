@@ -6,9 +6,8 @@ from buyer.models import Buyer
 User = get_user_model()
 
 
-def create_buyer_and_user(request):
+def create_buyer_and_user(validated_data):
     """Create user and after that create buyer with reference to user."""
-    validated_data = request.data
     user = User(
         username=validated_data["username"],
         email=validated_data["email"],
@@ -17,6 +16,7 @@ def create_buyer_and_user(request):
     )
     user.set_password(validated_data["password"])
     user.save()
+    validated_data["id"] = user.id
     Buyer.objects.create(
         account=user,
         age=validated_data["age"],

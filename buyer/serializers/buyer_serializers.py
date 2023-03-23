@@ -1,6 +1,7 @@
 """Serializers module for Buyer model."""
 import re
 
+from string import ascii_uppercase, ascii_lowercase
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email as email_validator
@@ -22,6 +23,7 @@ class BuyerSerializer(serializers.ModelSerializer):
 class RegistrationSerializer(serializers.ModelSerializer):
     """Serializer for User model."""
 
+    id = serializers.ReadOnlyField()
     username = serializers.CharField(min_length=3, max_length=20)
     password = serializers.CharField()
     email = serializers.CharField()
@@ -38,11 +40,11 @@ class RegistrationSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("Minimal password length - 8 symbols")
         if not re.search("[a-z]", value):
             raise serializers.ValidationError(
-                "Password must contain at least 1 [a-z] letter"
+                f"Password must contain at least 1 {ascii_lowercase} letter"
             )
         if not re.search("[A-Z]", value):
             raise serializers.ValidationError(
-                "Password must contain at least 1 [A-Z] letter"
+                f"Password must contain at least 1 {ascii_uppercase} letter"
             )
         if not re.search("[0-9]", value):
             raise serializers.ValidationError("Password must contain at least 1 digit")
@@ -75,6 +77,7 @@ class RegistrationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Buyer
         fields = [
+            "id",
             "username",
             "password",
             "email",
