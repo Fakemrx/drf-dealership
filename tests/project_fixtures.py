@@ -43,10 +43,11 @@ def buyer():
         username="TestUsr",
         password="TestPass123",
         email="test@pytest.io",
+        first_name="Abraham",
+        last_name="Lincoln",
     )
     buyer = Buyer.objects.create(
         account=user,
-        full_name="F I O",
         age=50,
         gender="male",
     )

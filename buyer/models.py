@@ -18,8 +18,7 @@ class Buyer(models.Model):
     """Model of buyer, includes full name, age, gender, balance, status (active or not)."""
 
     account = models.OneToOneField(User, on_delete=models.CASCADE)
-    full_name = models.CharField(max_length=100, verbose_name="Full name")
-    age = models.IntegerField(verbose_name="Age", default=0)
+    age = models.IntegerField(verbose_name="Age")
     gender = models.CharField(
         max_length=20,
         choices=[(gender.name, gender.value) for gender in Genders],
@@ -31,7 +30,10 @@ class Buyer(models.Model):
     is_active = models.BooleanField(verbose_name="Is active", default=True)
 
     def __str__(self):
-        return f"{self.full_name} | {self.balance} USD | {self.is_active}"
+        return (
+            f"{self.account.first_name} {self.account.last_name} | "
+            f"{self.balance} USD | {self.is_active}"
+        )
 
 
 class Offer(models.Model):
@@ -52,6 +54,7 @@ class Offer(models.Model):
 
     def __str__(self):
         return (
-            f"{self.buyer.full_name} want to buy {self.quantity} {self.car}, max price "
+            f"{self.buyer.account.first_name} {self.buyer.account.last_name} "
+            f"want to buy {self.quantity} {self.car}, max price "
             f"per 1 vehicle - {self.max_cost} USD"
         )

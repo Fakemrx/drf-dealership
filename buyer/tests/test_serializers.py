@@ -13,7 +13,6 @@ def test_buyer_serializer(buyer):
     expected_data = {
         "id": buyer.id,
         "account": buyer.account.id,
-        "full_name": "F I O",
         "age": 50,
         "gender": "male",
         "balance": "0.00",

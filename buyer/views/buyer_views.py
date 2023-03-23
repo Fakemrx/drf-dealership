@@ -9,7 +9,8 @@ from rest_framework.viewsets import GenericViewSet
 
 from buyer.filters import BuyerFilter
 from buyer.models import Buyer
-from buyer.serializers.buyer_serializers import BuyerSerializer, UserSerializer
+from buyer.serializers.buyer_serializers import BuyerSerializer, RegistrationSerializer
+from buyer.services import create_buyer_and_user
 
 User = get_user_model()
 
@@ -30,27 +31,13 @@ class BuyerRetrieveAPIView(GenericViewSet, RetrieveModelMixin, ListModelMixin):
     filterset_class = BuyerFilter
 
 
-class UserAPIView(APIView):
+class RegistrationAPIView(APIView):
     """APIView for create operation with User-Buyer model."""
 
-    serializer_class = UserSerializer
+    serializer_class = RegistrationSerializer
 
     def post(self, request):
         """Post method to create User-Buyer instances."""
-        self.serializer_class(data=request.data).is_valid(raise_exception=True)
-        validated_data = request.data
-        user = User(
-            username=validated_data["username"],
-            email=validated_data["email"],
-        )
-        user.set_password(validated_data["password"])
-        user.save()
-        Buyer.objects.create(
-            account=user,
-            full_name=validated_data["full_name"],
-            age=validated_data["age"],
-            gender=validated_data["gender"],
-            balance=0.00,
-            is_active=True,
-        )
+        RegistrationSerializer(data=request.data).is_valid(raise_exception=True)
+        create_buyer_and_user(request)
         return Response(data=request.data, status=status.HTTP_201_CREATED)

@@ -1,6 +1,5 @@
 """Serializers module for Buyer model."""
 import re
-from string import ascii_uppercase
 
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
@@ -20,14 +19,15 @@ class BuyerSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
-class UserSerializer(serializers.ModelSerializer):
+class RegistrationSerializer(serializers.ModelSerializer):
     """Serializer for User model."""
 
-    username = serializers.CharField()
+    username = serializers.CharField(min_length=3, max_length=20)
     password = serializers.CharField()
     email = serializers.CharField()
-    full_name = serializers.CharField()
-    age = serializers.IntegerField()
+    first_name = serializers.CharField()
+    last_name = serializers.CharField()
+    age = serializers.IntegerField(min_value=16, max_value=100)
     gender = serializers.ChoiceField(
         choices=[(gender.name, gender.value) for gender in Genders]
     )
@@ -46,7 +46,6 @@ class UserSerializer(serializers.ModelSerializer):
             )
         if not re.search("[0-9]", value):
             raise serializers.ValidationError("Password must contain at least 1 digit")
-        print(value)
         return value
 
     def validate_email(self, value):
@@ -61,39 +60,26 @@ class UserSerializer(serializers.ModelSerializer):
 
     def validate_username(self, value):
         """Validation for username field."""
-        if len(value) <= 3:
-            raise serializers.ValidationError(
-                "Too short, there should be more than 3 characters."
-            )
-        if len(value) > 20:
-            raise serializers.ValidationError(
-                "Too long, there should not be more than 20 characters."
-            )
-        try:
-            User.objects.get(username=value)
+        if User.objects.filter(username=value).exists():
             raise serializers.ValidationError(f"User {value} already exists.")
-        except User.DoesNotExist:
-            return value
+        return value
 
-    def validate_age(self, value):
-        """Validation for age field."""
-        if value <= 0:
-            raise serializers.ValidationError("Age must be positive.")
-        if value <= 16:
-            raise serializers.ValidationError("Too young to become a buyer.")
-        if value >= 100:
-            raise serializers.ValidationError("False information.")
-
-    def validate_full_name(self, value):
+    def validate_first_name(self, value):
         """Validation for full_name field."""
-        if len(value.split(" ")) != 3:
-            raise serializers.ValidationError("Incorrect full name format.")
-        for word in value.split(" "):
-            if word[0] not in ascii_uppercase:
-                raise serializers.ValidationError(
-                    "The first letters must be in an upper case."
-                )
+        return value.capitalize()
+
+    def validate_last_name(self, value):
+        """Validation for full_name field."""
+        return value.capitalize()
 
     class Meta:
         model = Buyer
-        fields = ["username", "password", "email", "full_name", "age", "gender"]
+        fields = [
+            "username",
+            "password",
+            "email",
+            "first_name",
+            "last_name",
+            "age",
+            "gender",
+        ]
