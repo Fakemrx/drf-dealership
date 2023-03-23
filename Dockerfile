@@ -14,10 +14,9 @@ RUN apt install -y netcat
 RUN pip install -U pipenv
 RUN pipenv install --system
 
-COPY . .
-
-EXPOSE 8000
-
+COPY ./entrypoint.sh /usr/src/app/entrypoint.sh
 RUN chmod +x /usr/src/app/entrypoint.sh
 
-ENTRYPOINT ["sh", "entrypoint.sh"]
+COPY . /usr/src/app
+
+EXPOSE 8000
