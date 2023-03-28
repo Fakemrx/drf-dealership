@@ -15,12 +15,22 @@ User = get_user_model()
 class BuyerSerializer(serializers.ModelSerializer):
     """Serializer for Buyer model."""
 
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        user = User.objects.get(id=data["account"])
+        data["username"] = user.username
+        data["first_name"] = user.first_name
+        data["last_name"] = user.last_name
+        data["email"] = user.email
+
+        return data
+
     class Meta:
         model = Buyer
-        fields = "__all__"
+        fields = ["account", "age", "gender", "balance", "is_active"]
 
 
-class RegistrationSerializer(serializers.ModelSerializer):
+class RegistrationSerializer(serializers.Serializer):
     """Serializer for User model."""
 
     id = serializers.ReadOnlyField()
@@ -73,16 +83,3 @@ class RegistrationSerializer(serializers.ModelSerializer):
     def validate_last_name(self, value):
         """Validation for full_name field."""
         return value.capitalize()
-
-    class Meta:
-        model = Buyer
-        fields = [
-            "id",
-            "username",
-            "password",
-            "email",
-            "first_name",
-            "last_name",
-            "age",
-            "gender",
-        ]

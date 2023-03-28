@@ -11,12 +11,15 @@ def test_buyer_serializer(buyer):
     """Test function to check if BuyerSerializer works correctly."""
     serializer_data = BuyerSerializer(buyer).data
     expected_data = {
-        "id": buyer.id,
         "account": buyer.account.id,
         "age": 50,
         "gender": "male",
         "balance": "0.00",
         "is_active": True,
+        "username": buyer.account.username,
+        "email": buyer.account.email,
+        "first_name": buyer.account.first_name,
+        "last_name": buyer.account.last_name,
     }
     assert serializer_data == expected_data, "Should be equal"
 

@@ -17,12 +17,15 @@ User = get_user_model()
 def test_get_buyer(buyer):
     """Testing GET method to get detailed buyer instance."""
     expected_data = {
-        "id": buyer.id,
         "account": buyer.account.id,
         "age": 50,
         "gender": "male",
         "balance": "0.00",
         "is_active": True,
+        "username": buyer.account.username,
+        "email": buyer.account.email,
+        "first_name": buyer.account.first_name,
+        "last_name": buyer.account.last_name,
     }
 
     db_data = Buyer.objects.get(id=buyer.id)
