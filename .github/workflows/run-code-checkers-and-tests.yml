@@ -23,10 +23,16 @@ jobs:
           echo POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }} >> .env
           echo POSTGRES_HOST=${{ secrets.POSTGRES_HOST }} >> .env
           echo POSTGRES_PORT=${{ secrets.POSTGRES_PORT }} >> .env
+          echo DJANGO_SUPERUSER_USERNAME=${{ secrets.DJANGO_SUPERUSER_USERNAME }} >> .env
+          echo DJANGO_SUPERUSER_PASSWORD=${{ secrets.DJANGO_SUPERUSER_PASSWORD }} >> .env
+          echo DJANGO_SUPERUSER_EMAIL=${{ secrets.DJANGO_SUPERUSER_EMAIL }} >> .env
+          echo DJANGO_ALLOWED_HOSTS=${{ secrets.DJANGO_ALLOWED_HOSTS }} >> .env
+          echo CELERY_BROKER_URL=${{ secrets.CELERY_BROKER_URL }} >> .env
+          echo CELERY_RESULT_BACKEND=${{ secrets.CELERY_RESULT_BACKEND }} >> .env
       - name: Build docker
         run: docker compose up -d --build
       - name: Tests
-        run: docker-compose exec -T drf_test_task pytest
+        run: docker-compose exec -T drf_test_task pytest -v
       - name: Flake8 check
         run: docker-compose exec -T drf_test_task flake8 .
       - name: Mypy check

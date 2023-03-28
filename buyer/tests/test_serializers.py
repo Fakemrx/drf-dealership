@@ -3,8 +3,7 @@ import pytest
 
 from buyer.serializers.buyer_serializers import BuyerSerializer
 from buyer.serializers.offer_serializers import OfferSerializer
-from buyer.tests.buyer_app_fixtures import buyer, offer
-from car.tests.car_app_fixtures import car, engine
+from tests.project_fixtures import buyer, offer, car, engine
 
 
 @pytest.mark.django_db

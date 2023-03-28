@@ -17,7 +17,9 @@ pylint-django = "*"
 pylint = "*"
 coverage = "*"
 django-filter = "*"
-djangorestframework-simplejwt = "*"
+django-countries = "*"
+celery = "*"
+redis = "*"
 
 [dev-packages]
 
