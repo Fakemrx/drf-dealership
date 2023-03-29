@@ -1,5 +1,6 @@
 """Buyer's app services."""
 from django.contrib.auth import get_user_model
+from rest_framework_simplejwt.tokens import RefreshToken
 
 from buyer.models import Buyer
 
@@ -24,3 +25,5 @@ def create_buyer_and_user(validated_data):
         balance=0.00,
         is_active=True,
     )
+    refresh_token = RefreshToken.for_user(user)
+    return refresh_token, user.id

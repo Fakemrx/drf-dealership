@@ -6,7 +6,6 @@ from rest_framework.mixins import RetrieveModelMixin, ListModelMixin
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import GenericViewSet
-from rest_framework_simplejwt.tokens import RefreshToken
 
 from buyer.filters import BuyerFilter
 from buyer.models import Buyer
@@ -19,7 +18,7 @@ User = get_user_model()
 class BuyerRetrieveAPIView(GenericViewSet, RetrieveModelMixin, ListModelMixin):
     """APIView for list and detail operations with Buyer model."""
 
-    queryset = Buyer.objects.all()
+    queryset = Buyer.objects.select_related("account")
     serializer_class = BuyerSerializer
     filter_backends = [
         DjangoFilterBackend,
@@ -42,14 +41,12 @@ class RegistrationAPIView(APIView):
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
         validated_data = serializer.data
-        create_buyer_and_user(validated_data)
-        user = User.objects.get(id=validated_data["id"])
-        refresh = RefreshToken.for_user(user)
+        refresh_token, user_id = create_buyer_and_user(validated_data)
         return Response(
             {
-                "token": str(refresh),
-                "access": str(refresh.access_token),
-                "user_id": user.id,
+                "refresh_token": str(refresh_token),
+                "access_token": str(refresh_token.access_token),
+                "user_id": user_id,
             },
             status=status.HTTP_201_CREATED,
         )
