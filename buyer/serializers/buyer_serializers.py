@@ -22,7 +22,6 @@ class BuyerSerializer(serializers.ModelSerializer):
         data["first_name"] = user.first_name
         data["last_name"] = user.last_name
         data["email"] = user.email
-
         return data
 
     class Meta:
@@ -35,7 +34,7 @@ class RegistrationSerializer(serializers.Serializer):
 
     id = serializers.ReadOnlyField()
     username = serializers.CharField(min_length=3, max_length=20)
-    password = serializers.CharField()
+    password = serializers.CharField(style={"input_type": "password"})
     email = serializers.CharField()
     first_name = serializers.CharField()
     last_name = serializers.CharField()
