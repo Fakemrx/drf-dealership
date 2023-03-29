@@ -44,42 +44,61 @@ class RegistrationSerializer(serializers.Serializer):
         choices=[(gender.name, gender.value) for gender in Genders]
     )
 
-    def validate_password(self, value):
+    @staticmethod
+    def validate_password(password):
         """Validation for password field."""
-        if len(value) < 8:
+        if len(password) < 8:
             raise serializers.ValidationError("Minimal password length - 8 symbols")
-        if not re.search("[a-z]", value):
+        if not re.search("[a-z]", password):
             raise serializers.ValidationError(
                 f"Password must contain at least 1 {ascii_lowercase} letter"
             )
-        if not re.search("[A-Z]", value):
+        if not re.search("[A-Z]", password):
             raise serializers.ValidationError(
                 f"Password must contain at least 1 {ascii_uppercase} letter"
             )
-        if not re.search("[0-9]", value):
+        if not re.search("[0-9]", password):
             raise serializers.ValidationError("Password must contain at least 1 digit")
-        return value
+        return password
 
-    def validate_email(self, value):
+    @staticmethod
+    def validate_email(email):
         """Validation for email field."""
         try:
-            email_validator(value)
+            email_validator(email)
         except ValidationError:
             raise serializers.ValidationError(
                 "The email is not a valid email address."
             ) from ValidationError
-        return value
+        return email
 
-    def validate_username(self, value):
+    @staticmethod
+    def validate_username(username):
         """Validation for username field."""
-        if User.objects.filter(username=value).exists():
-            raise serializers.ValidationError(f"User {value} already exists.")
-        return value
+        if User.objects.filter(username=username).exists():
+            raise serializers.ValidationError(f"User {username} already exists.")
+        return username
 
-    def validate_first_name(self, value):
+    @staticmethod
+    def validate_first_name(first_name):
         """Validation for full_name field."""
-        return value.capitalize()
+        return first_name.capitalize()
 
-    def validate_last_name(self, value):
+    @staticmethod
+    def validate_last_name(last_name):
         """Validation for full_name field."""
-        return value.capitalize()
+        return last_name.capitalize()
+
+
+class AuthSerializer(serializers.Serializer):
+    """Serializer for authentication."""
+
+    username = serializers.CharField()
+    password = serializers.CharField()
+
+    @staticmethod
+    def validate_username(username):
+        """Validation does user exist."""
+        if not User.objects.filter(username=username).exists():
+            raise serializers.ValidationError(f"User {username} does not exists.")
+        return username
