@@ -1,0 +1,248 @@
+[
+  {
+    "car_brand": "Toyota",
+    "car_model": "Camry",
+    "release_year": 2019,
+    "car_type": "sedan"
+  },
+  {
+    "car_brand": "Ford",
+    "car_model": "F-150",
+    "release_year": 2021,
+    "car_type": "truck"
+  },
+  {
+    "car_brand": "Chevrolet",
+    "car_model": "Corvette",
+    "release_year": 2020,
+    "car_type": "sport"
+  },
+  {
+    "car_brand": "Nissan",
+    "car_model": "Rogue",
+    "release_year": 2021,
+    "car_type": "suv"
+  },
+  {
+    "car_brand": "Honda",
+    "car_model": "Civic",
+    "release_year": 2018,
+    "car_type": "coupe"
+  },
+  {
+    "car_brand": "Porsche",
+    "car_model": "911",
+    "release_year": 2022,
+    "car_type": "sport"
+  },
+  {
+    "car_brand": "Mercedes-Benz",
+    "car_model": "S-Class",
+    "release_year": 2021,
+    "car_type": "sedan"
+  },
+  {
+    "car_brand": "Tesla",
+    "car_model": "Model X",
+    "release_year": 2016,
+    "car_type": "suv"
+  },
+  {
+    "car_brand": "Audi",
+    "car_model": "Q7",
+    "release_year": 2019,
+    "car_type": "suv"
+  },
+  {
+    "car_brand": "BMW",
+    "car_model": "3 Series",
+    "release_year": 2022,
+    "car_type": "sedan"
+  },
+  {
+    "car_brand": "Lamborghini",
+    "car_model": "Aventador",
+    "release_year": 2017,
+    "car_type": "hyper"
+  },
+  {
+    "car_brand": "Ferrari",
+    "car_model": "488",
+    "release_year": 2016,
+    "car_type": "sport"
+  },
+  {
+    "car_brand": "Bugatti",
+    "car_model": "Chiron",
+    "release_year": 2018,
+    "car_type": "hyper"
+  },
+  {
+    "car_brand": "Dodge",
+    "car_model": "Challenger",
+    "release_year": 2015,
+    "car_type": "muscle"
+  },
+  {
+    "car_brand": "GMC",
+    "car_model": "Sierra",
+    "release_year": 2020,
+    "car_type": "truck"
+  },
+  {
+    "car_brand": "Jeep",
+    "car_model": "Wrangler",
+    "release_year": 2021,
+    "car_type": "suv"
+  },
+  {
+    "car_brand": "Ford",
+    "car_model": "Mustang",
+    "release_year": 2020,
+    "car_type": "muscle"
+  },
+  {
+    "car_brand": "Chevrolet",
+    "car_model": "Impala",
+    "release_year": 2018,
+    "car_type": "sedan"
+  },
+  {
+    "car_brand": "Toyota",
+    "car_model": "Rav4",
+    "release_year": 2022,
+    "car_type": "suv"
+  },
+  {
+    "car_brand": "Nissan",
+    "car_model": "Sentra",
+    "release_year": 2017,
+    "car_type": "sedan"
+  },
+  {
+    "car_brand": "Honda",
+    "car_model": "Accord",
+    "release_year": 2021,
+    "car_type": "sedan"
+  },
+  {
+    "car_brand": "Tesla",
+    "car_model": "Model S",
+    "release_year": 2013,
+    "car_type": "sedan"
+  },
+  {
+    "car_brand": "Mercedes-Benz",
+    "car_model": "G-Wagon",
+    "release_year": 2019,
+    "car_type": "suv"
+  },
+  {
+    "car_brand": "Audi",
+    "car_model": "A8",
+    "release_year": 2022,
+    "car_type": "sedan"
+  },
+  {
+    "car_brand": "BMW",
+    "car_model": "X5",
+    "release_year": 2020,
+    "car_type": "suv"
+  },
+  {
+    "car_brand": "Lamborghini",
+    "car_model": "Huracan",
+    "release_year": 2020,
+    "car_type": "hyper"
+  },
+  {
+    "car_brand": "Ferrari",
+    "car_model": "812 Superfast",
+    "release_year": 2018,
+    "car_type": "sport"
+  },
+  {
+    "car_brand": "Bugatti",
+    "car_model": "Veyron",
+    "release_year": 2005,
+    "car_type": "hyper"
+  },
+  {
+    "car_brand": "Dodge",
+    "car_model": "Durango",
+    "release_year": 2021,
+    "car_type": "suv"
+  },
+  {
+    "car_brand": "GMC",
+    "car_model": "Acadia",
+    "release_year": 2019,
+    "car_type": "suv"
+  },
+  {
+    "car_brand": "Jeep",
+    "car_model": "Cherokee",
+    "release_year": 2021,
+    "car_type": "suv"
+  },
+  {
+    "car_brand": "Ford",
+    "car_model": "Explorer",
+    "release_year": 2002,
+    "car_type": "suv"
+  },
+  {
+    "car_brand": "Chevrolet",
+    "car_model": "Cavalier",
+    "release_year": 2005,
+    "car_type": "sedan"
+  },
+  {
+    "car_brand": "Toyota",
+    "car_model": "Corolla",
+    "release_year": 2008,
+    "car_type": "sedan"
+  },
+  {
+    "car_brand": "Nissan",
+    "car_model": "Altima",
+    "release_year": 2006,
+    "car_type": "sedan"
+  },
+  {
+    "car_brand": "Honda",
+    "car_model": "Civic",
+    "release_year": 2007,
+    "car_type": "sedan"
+  },
+  {
+    "car_brand": "Mitsubishi",
+    "car_model": "Eclipse",
+    "release_year": 2003,
+    "car_type": "coupe"
+  },
+  {
+    "car_brand": "Acura",
+    "car_model": "TL",
+    "release_year": 2009,
+    "car_type": "sedan"
+  },
+  {
+    "car_brand": "Subaru",
+    "car_model": "Impreza",
+    "release_year": 2004,
+    "car_type": "sedan"
+  },
+  {
+    "car_brand": "Dodge",
+    "car_model": "Challenger",
+    "release_year": 2008,
+    "car_type": "muscle"
+  },
+  {
+    "car_brand": "BMW",
+    "car_model": "M3",
+    "release_year": 2006,
+    "car_type": "coupe"
+  }
+]

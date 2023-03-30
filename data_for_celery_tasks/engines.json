@@ -1,0 +1,122 @@
+[
+  {
+    "engine_brand": "Toyota",
+    "fuel_type": "hybrid",
+    "engine_volume": 1.8,
+    "hp": 121
+  },
+  {
+    "engine_brand": "Ford",
+    "fuel_type": "gas",
+    "engine_volume": 2.3,
+    "hp": 310
+  },
+  {
+    "engine_brand": "BMW",
+    "fuel_type": "gas",
+    "engine_volume": 3.0,
+    "hp": 382
+  },
+  {
+    "engine_brand": "Mercedes-Benz",
+    "fuel_type": "diesel",
+    "engine_volume": 2.0,
+    "hp": 194
+  },
+  {
+    "engine_brand": "Audi",
+    "fuel_type": "gas",
+    "engine_volume": 2.0,
+    "hp": 248
+  },
+  {
+    "engine_brand": "Volvo",
+    "fuel_type": "hybrid",
+    "engine_volume": 2.0,
+    "hp": 400
+  },
+  {
+    "engine_brand": "Honda",
+    "fuel_type": "hybrid",
+    "engine_volume": 1.5,
+    "hp": 212
+  },
+  {
+    "engine_brand": "Chevrolet",
+    "fuel_type": "gas",
+    "engine_volume": 6.2,
+    "hp": 455
+  },
+  {
+    "engine_brand": "Porsche",
+    "fuel_type": "hybrid",
+    "engine_volume": 2.9,
+    "hp": 455
+  },
+  {
+    "engine_brand": "Jaguar",
+    "fuel_type": "gas",
+    "engine_volume": 3.0,
+    "hp": 296
+  },
+  {
+    "engine_brand": "Lexus",
+    "fuel_type": "hybrid",
+    "engine_volume": 3.5,
+    "hp": 308
+  },
+  {
+    "engine_brand": "Mazda",
+    "fuel_type": "gas",
+    "engine_volume": 2.5,
+    "hp": 227
+  },
+  {
+    "engine_brand": "Ferrari",
+    "fuel_type": "gas",
+    "engine_volume": 6.3,
+    "hp": 730
+  },
+  {
+    "engine_brand": "Lamborghini",
+    "fuel_type": "gas",
+    "engine_volume": 6.5,
+    "hp": 760
+  },
+  {
+    "engine_brand": "Aston Martin",
+    "fuel_type": "gas",
+    "engine_volume": 5.2,
+    "hp": 630
+  },
+  {
+    "engine_brand": "Bugatti",
+    "fuel_type": "gas",
+    "engine_volume": 8.0,
+    "hp": 1500
+  },
+  {
+    "engine_brand": "Ferrari",
+    "fuel_type": "gas",
+    "engine_volume": 3.9,
+    "hp": 710
+  },
+  {
+    "engine_brand": "Audi",
+    "fuel_type": "diesel",
+    "engine_volume": 3.0,
+    "hp": 286
+  },
+  {
+    "engine_brand": "Lexus",
+    "fuel_type": "hybrid",
+    "engine_volume": 3.5,
+    "hp": 308
+  },
+  {
+    "engine_brand": "Tesla",
+    "fuel_type": "electro",
+    "engine_volume": 0,
+    "hp": 670
+  }
+]
