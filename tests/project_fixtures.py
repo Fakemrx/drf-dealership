@@ -14,7 +14,6 @@ def engine():
         fuel_type="gas",
         engine_volume=1.5,
         hp=111,
-        is_active=True,
     )
     return engine
 
@@ -28,7 +27,6 @@ def car(engine):
         release_year=2022,
         car_type="suv",
         engine=engine,
-        is_active=True,
     )
     return car
 

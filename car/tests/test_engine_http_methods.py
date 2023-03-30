@@ -20,7 +20,6 @@ def test_post_engine():
         "fuel_type": "gas",
         "engine_volume": "1.5",
         "hp": 111,
-        "is_active": True,
     }
     request = c.post("/api/car/engines/", new_data, format="json")
     assert request.status_code == status.HTTP_201_CREATED, "Should be 201"
@@ -37,7 +36,6 @@ def test_put_engine(engine):
         "fuel_type": "diesel",
         "engine_volume": "2.0",
         "hp": 500,
-        "is_active": True,
     }
     request = c.put(f"/api/car/engines/{engine.id}/", new_data, format="json")
     assert request.status_code == status.HTTP_200_OK, "Should be 200"
@@ -50,14 +48,13 @@ def test_put_engine(engine):
 @pytest.mark.django_db
 def test_patch_engine(engine):
     """Testing PATCH method to partial update engine instance."""
-    new_data = {"engine_brand": "Partial updated brand", "hp": 300, "is_active": False}
+    new_data = {"engine_brand": "Partial updated brand", "hp": 300}
     expected_data = {
         "id": engine.id,
         "engine_brand": "Partial updated brand",
         "fuel_type": "gas",
         "engine_volume": "1.5",
         "hp": 300,
-        "is_active": False,
     }
     request = c.patch(f"/api/car/engines/{engine.id}/", new_data, format="json")
     assert request.status_code == status.HTTP_200_OK, "Should be 200"
@@ -76,7 +73,6 @@ def test_delete_engine(engine):
         "fuel_type": "gas",
         "engine_volume": "1.5",
         "hp": 111,
-        "is_active": True,
     }
     response = c.get(f"/api/car/engines/{engine.id}/")
     assert response.status_code == status.HTTP_200_OK, "Should be 200"

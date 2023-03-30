@@ -21,7 +21,6 @@ def test_post_car(engine):
         "release_year": 2022,
         "car_type": "suv",
         "engine": engine.id,
-        "is_active": True,
     }
     request = c.post("/api/car/cars/", new_data, format="json")
     assert request.status_code == status.HTTP_201_CREATED, "Should be 201"
@@ -40,7 +39,6 @@ def test_put_car(engine, car):
         "release_year": 2023,
         "car_type": "sport",
         "engine": engine.id,
-        "is_active": False,
     }
     request = c.put(f"/api/car/cars/{car.id}/", new_data, format="json")
     assert request.status_code == status.HTTP_200_OK, "Should be 200"
@@ -63,7 +61,6 @@ def test_patch_car(engine, car):
         "release_year": 2024,
         "car_type": "suv",
         "engine": str(engine),
-        "is_active": True,
     }
     request = c.patch(f"/api/car/cars/{car.id}/", new_data, format="json")
     assert request.status_code == status.HTTP_200_OK, "Should be 200"
@@ -83,7 +80,6 @@ def test_delete_car(car, engine):
         "release_year": 2022,
         "car_type": "suv",
         "engine": str(engine),
-        "is_active": True,
     }
     response = c.get(f"/api/car/cars/{car.id}/")
     assert response.status_code == status.HTTP_200_OK, "Should be 200"
