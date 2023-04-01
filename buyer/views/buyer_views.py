@@ -9,7 +9,10 @@ from rest_framework.viewsets import GenericViewSet
 
 from buyer.filters import BuyerFilter
 from buyer.models import Buyer
-from buyer.serializers.buyer_serializers import BuyerSerializer, RegistrationSerializer
+from buyer.serializers.buyer_serializers import (
+    BuyerSerializer,
+    RegistrationSerializer,
+)
 from buyer.services import create_buyer_and_user
 
 User = get_user_model()

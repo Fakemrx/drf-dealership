@@ -5,13 +5,15 @@ from django.urls import path
 from rest_framework.routers import SimpleRouter
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
-from buyer.views.buyer_views import BuyerRetrieveAPIView, RegistrationAPIView
+from buyer.views.buyer_views import (
+    BuyerRetrieveAPIView,
+    RegistrationAPIView,
+)
 from buyer.views.offer_views import OfferAPIView
 
 router = SimpleRouter()
 router.register("buyers", BuyerRetrieveAPIView)
 router.register("offers", OfferAPIView)
-# router.register("registration", UserAPIView.as_view())
 
 urlpatterns = [
     path("registration/", RegistrationAPIView.as_view(), name="registration"),
