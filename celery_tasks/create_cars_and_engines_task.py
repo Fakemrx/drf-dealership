@@ -11,7 +11,7 @@ logger = get_task_logger(__name__)
 @shared_task
 def create_engine():
     """
-    Celery task, creates a bunch of engines using
+    Celery task, creates an engine using
     data from engines.json.
     """
 
@@ -32,18 +32,19 @@ def check_and_create_engine(random_entry):
         fuel_type=random_entry["fuel_type"],
         hp=random_entry["hp"],
     ).exists():
-        Engine.objects.create(
+        engine = Engine.objects.create(
             engine_brand=random_entry["engine_brand"],
             engine_volume=random_entry["engine_volume"],
             fuel_type=random_entry["fuel_type"],
             hp=random_entry["hp"],
         )
+        logger.info(f"Created Engine {engine}")
 
 
 @shared_task
 def create_car():
     """
-    Celery task, creates a bunch of cars using
+    Celery task, creates a car using
     data from cars.json.
     """
 
@@ -59,9 +60,9 @@ def check_and_create_car(random_entry):
     from car.models import Car
     from car.models import Engine
 
-    engines_quantity = Engine.objects.count()
-    if engines_quantity > 1:
-        random_id = random.randint(1, Engine.objects.count())
+    engines_id = list(Engine.objects.values_list("id"))
+    if len(engines_id) > 1:
+        random_id = random.choice(engines_id)[0]
         random_engine = Engine.objects.get(id=random_id)
         if not Car.objects.filter(
             car_brand=random_entry["car_brand"],
@@ -70,10 +71,11 @@ def check_and_create_car(random_entry):
             car_type=random_entry["car_type"],
             engine=random_engine,
         ).exists():
-            Car.objects.create(
+            car = Car.objects.create(
                 car_brand=random_entry["car_brand"],
                 car_model=random_entry["car_model"],
                 release_year=random_entry["release_year"],
                 car_type=random_entry["car_type"],
                 engine=random_engine,
             )
+            logger.info(f"Created {car}")

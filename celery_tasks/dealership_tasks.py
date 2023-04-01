@@ -18,6 +18,7 @@ def dealership_buys_preferred_cars():
     from dealership.models import CarDealership
 
     for dealership in CarDealership.objects.all():  # Goi through every dealership
+        logger.info(f"{dealership.name} is looking at providers stocks")
         if (
             dealership.preferred_cars_list.all()
         ):  # Check if there is a list of preferred cars
@@ -31,6 +32,9 @@ def dealership_buys_preferred_cars():
                 dealership, cars_list
             )  # Get dict {car: (price, provider)}
         if car_prices:
+            logger.info("Found some cars:")
+            for k, v in car_prices.items():
+                logger.info(f"{k} | Price: {v[0]} USD | Provider {v[1]}")
             balance_per_car = round(dealership.balance / len(car_prices), 2)
             # Divide balance into equal parts (balance divides according to quantity of found cars)
             if buy_preferred_cars(car_prices, balance_per_car, dealership) == 0:
@@ -163,6 +167,10 @@ def data_entries(dealer, price_and_provider, quantity, car, balance_per_car):
             total_price=price * quantity,
         )
         # Add entry into a db about provider's sale
+        logger.info(
+            f"{dealer.name} just bought {quantity} {car} |"
+            f" {price * quantity} USD | Provider {cur_provider.name}"
+        )
         return True
     return False
 

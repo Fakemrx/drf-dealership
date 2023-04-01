@@ -19,6 +19,6 @@ class CarAPIView(ModelViewSet):
         filters.OrderingFilter,
     ]
     search_fields = ["^car_brand", "^car_model"]
-    ordering_fields = ["release_year", "car_brand"]
+    ordering_fields = ["id", "release_year", "car_brand"]
     ordering = ["car_brand"]
     filterset_class = CarFilter
