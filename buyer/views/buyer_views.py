@@ -1,5 +1,6 @@
 """Module of CRUD APIViews for Buyer model."""
 from django.contrib.auth import get_user_model
+from django.db.models import F
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters, status
 from rest_framework.mixins import RetrieveModelMixin, ListModelMixin
@@ -21,7 +22,12 @@ User = get_user_model()
 class BuyerRetrieveAPIView(GenericViewSet, RetrieveModelMixin, ListModelMixin):
     """APIView for list and detail operations with Buyer model."""
 
-    queryset = Buyer.objects.select_related("account")
+    queryset = Buyer.objects.annotate(
+        username=F("account__username"),
+        email=F("account__email"),
+        first_name=F("account__first_name"),
+        last_name=F("account__last_name"),
+    )
     serializer_class = BuyerSerializer
     filter_backends = [
         DjangoFilterBackend,

@@ -15,14 +15,16 @@ User = get_user_model()
 class BuyerSerializer(serializers.ModelSerializer):
     """Serializer for Buyer model."""
 
-    def to_representation(self, instance):
-        data = super().to_representation(instance)
-        user = User.objects.get(id=data["account"])
-        data["username"] = user.username
-        data["first_name"] = user.first_name
-        data["last_name"] = user.last_name
-        data["email"] = user.email
-        return data
+    account = serializers.SerializerMethodField()
+
+    def get_account(self, instance):
+        """Add main information about buyer's account"""
+        return {
+            "username": instance.username,
+            "email": instance.email,
+            "first_name": instance.first_name,
+            "last_name": instance.last_name,
+        }
 
     class Meta:
         model = Buyer
