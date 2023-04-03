@@ -25,15 +25,14 @@ class Command(BaseCommand):
             password = os.environ.get("DJANGO_SUPERUSER_PASSWORD", default="1234")
         else:
             password = options["password"]
-        try:
-            User.objects.get(username=username)
-            self.stdout.write(self.style.ERROR(f"User '{username}' already exists!"))
-        except User.DoesNotExist:
-            user = User(
-                username=username,
-                is_staff=True,
-                is_superuser=True,
-            )
+        user, created = User.objects.get_or_create(
+            username=username,
+            defaults={
+                "is_staff": True,
+                "is_superuser": True,
+            },
+        )
+        if created:
             user.set_password(password)
             user.save()
             self.stdout.write(
@@ -41,3 +40,5 @@ class Command(BaseCommand):
                     f"Admin created! Username: {username}, Password: {password}"
                 )
             )
+        else:
+            self.stdout.write(self.style.ERROR(f"User '{username}' already exists!"))

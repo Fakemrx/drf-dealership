@@ -36,8 +36,6 @@ class Car(models.Model):
     )
     engine = models.ForeignKey("car.Engine", null=True, on_delete=models.SET_NULL)
 
-    is_active = models.BooleanField(default=True, verbose_name="Is active")
-
     def __str__(self):
         return (
             f"Car {self.car_brand} {self.car_model} {self.release_year} | Type: "
@@ -71,7 +69,6 @@ class Engine(models.Model):
         max_digits=3, decimal_places=1, verbose_name="Engine volume"
     )
     hp = models.IntegerField(null=True, blank=True, verbose_name="Engine horse powers")
-    is_active = models.BooleanField(default=True, verbose_name="Is active")
 
     def __str__(self):
         return (
