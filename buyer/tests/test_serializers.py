@@ -19,12 +19,12 @@ def test_buyer_serializer(buyer):
     ).get(account_id=buyer.account.id)
     serializer_data = BuyerSerializer(cur_buyer).data
     expected_data = {
-        "account": {
-            "username": buyer.account.username,
-            "email": buyer.account.email,
-            "first_name": buyer.account.first_name,
-            "last_name": buyer.account.last_name,
-        },
+        "id": buyer.id,
+        "account": buyer.account.id,
+        "username": buyer.account.username,
+        "email": buyer.account.email,
+        "first_name": buyer.account.first_name,
+        "last_name": buyer.account.last_name,
         "age": 50,
         "gender": "male",
         "balance": "0.00",
