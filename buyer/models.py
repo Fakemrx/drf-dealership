@@ -1,7 +1,10 @@
 """Models of Buyer app."""
 from enum import Enum
 
+from django.contrib.auth import get_user_model
 from django.db import models
+
+User = get_user_model()
 
 
 class Genders(Enum):
@@ -14,7 +17,7 @@ class Genders(Enum):
 class Buyer(models.Model):
     """Model of buyer, includes full name, age, gender, balance, status (active or not)."""
 
-    full_name = models.CharField(max_length=100, verbose_name="Full name")
+    account = models.OneToOneField(User, on_delete=models.CASCADE)
     age = models.IntegerField(verbose_name="Age")
     gender = models.CharField(
         max_length=20,
@@ -22,12 +25,15 @@ class Buyer(models.Model):
         verbose_name="Gender",
     )
     balance = models.DecimalField(
-        max_digits=8, decimal_places=2, verbose_name="Buyer's balance"
+        max_digits=8, decimal_places=2, verbose_name="Buyer's balance", default=0
     )
-    is_active = models.BooleanField(verbose_name="Is active")
+    is_active = models.BooleanField(verbose_name="Is active", default=True)
 
     def __str__(self):
-        return f"{self.full_name} | {self.balance} USD | {self.is_active}"
+        return (
+            f"{self.account.first_name} {self.account.last_name} | "
+            f"{self.balance} USD | {self.is_active}"
+        )
 
 
 class Offer(models.Model):
@@ -48,6 +54,7 @@ class Offer(models.Model):
 
     def __str__(self):
         return (
-            f"{self.buyer.full_name} want to buy {self.quantity} {self.car}, max price "
+            f"{self.buyer.account.first_name} {self.buyer.account.last_name} "
+            f"want to buy {self.quantity} {self.car}, max price "
             f"per 1 vehicle - {self.max_cost} USD"
         )

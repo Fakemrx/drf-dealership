@@ -155,7 +155,10 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # Rest_framework settings
 REST_FRAMEWORK = {
-    "DEFAULT_FILTER_BACKENDS": ["django_filters.rest_framework.DjangoFilterBackend"]
+    "DEFAULT_FILTER_BACKENDS": ["django_filters.rest_framework.DjangoFilterBackend"],
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+    ],
 }
 
 # Celery settings
@@ -169,5 +172,21 @@ CELERY_BEAT_SCHEDULE = {
     "sample_task": {
         "task": "DRFTestTask.tasks.sample_task",
         "schedule": crontab(minute="*/1"),
+    },
+}
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+        },
+    },
+    "loggers": {
+        "django.db.backends": {
+            "handlers": ["console"],
+            "level": "DEBUG",
+        },
     },
 }
