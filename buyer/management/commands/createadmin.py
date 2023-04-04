@@ -17,14 +17,14 @@ class Command(BaseCommand):
         parser.add_argument("password", nargs="?", type=str)
 
     def handle(self, *args, **options):
-        if options["username"] is None:
-            username = os.environ.get("DJANGO_SUPERUSER_USERNAME", default="Admin")
-        else:
+        if options.get("username"):
             username = options["username"]
-        if options["password"] is None:
-            password = os.environ.get("DJANGO_SUPERUSER_PASSWORD", default="1234")
         else:
+            username = os.environ.get("DJANGO_SUPERUSER_USERNAME", default="Admin")
+        if options.get("password"):
             password = options["password"]
+        else:
+            password = os.environ.get("DJANGO_SUPERUSER_PASSWORD", default="1234")
         user, created = User.objects.get_or_create(
             username=username,
             defaults={

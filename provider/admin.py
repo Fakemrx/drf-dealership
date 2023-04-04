@@ -5,9 +5,11 @@ from provider.models import (
     CarsInProviderStock,
     ProviderDiscounts,
     ProviderPersonalDiscounts,
+    ProviderSales,
 )
 
 admin.site.register(Provider)
+admin.site.register(ProviderSales)
 admin.site.register(CarsInProviderStock)
 admin.site.register(ProviderDiscounts)
 admin.site.register(ProviderPersonalDiscounts)

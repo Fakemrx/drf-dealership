@@ -67,6 +67,13 @@ def suitable_cars_list_filter(
 ):
     """
     Filters only cars that match final search.
+    Function looks at quantity of exact car in cars_suitable_by_specs and
+    compares it to the num_of_specs, if it equals - the car matches all
+    the specified parameters, if it's quantity lower than needed - this car
+    does not suit our "filters" and will not be added to the final list.
+    Args:
+    cars_suitable_by_specs - list of filtered cars
+    num_of_specs - total quantity of specs
     """
     suitable_cars = []
     for car in cars_suitable_by_specs:
@@ -87,11 +94,15 @@ def buy_preferred_cars(car_prices, balance_per_car, dealer):
     cars_bought = 0
     for car, price_and_provider in car_prices.items():
         for quantity in range(5, 0, -1):
+            # Try to buy 5 cars, if a dealer does not have enough money
+            # (balance_per_car) to buy 5 of them, the quantity will be reduced
+            # by 1 and will do that until 2 cases: dealer will buy *quantity*
+            # cars or *quantity* will be reduced up to 0.
             success = data_entries(
                 dealer, price_and_provider, quantity, car, balance_per_car
             )
-            cars_bought += quantity
             if success:
+                cars_bought += quantity
                 break
     return cars_bought
 
@@ -106,43 +117,38 @@ def data_entries(dealer, price_and_provider, quantity, car, balance_per_car):
 
     price = price_and_provider[0]
     cur_provider = price_and_provider[1]
-    if price * quantity <= balance_per_car:
-        dealer_stock, created = CarsInDealershipStock.objects.get_or_create(
-            dealership=dealer,
-            car=car,
-            defaults={
-                "quantity": quantity,
-                "price": Decimal(0.00),
-            },
-        )
-        if not created:
-            dealer_stock.quantity += quantity
-            dealer_stock.save()
-        dealer.balance -= price * quantity
-        dealer.save()
-        (
-            provider_personal_discount,
-            created,
-        ) = ProviderPersonalDiscounts.objects.get_or_create(
-            provider=cur_provider,
-            dealership=dealer,
-            defaults={
-                "actual_discount": 0,
-                "quantity_of_bought_cars": quantity,
-            },
-        )
-        if not created:
-            provider_personal_discount.quantity_of_bought_cars += quantity
-            provider_personal_discount.save()
-        ProviderSales.objects.create(
-            provider=cur_provider,
-            dealership=dealer,
-            car=car,
-            quantity=quantity,
-            total_price=price * quantity,
-        )
-        return True
-    return False
+    if price * quantity > balance_per_car:
+        return False
+
+    dealer_stock, created = CarsInDealershipStock.objects.get_or_create(
+        dealership=dealer,
+        car=car,
+        defaults={
+            "quantity": quantity,
+            "price": Decimal(0.00),
+        },
+    )
+    if not created:
+        dealer_stock.quantity += quantity
+        dealer_stock.save()
+    dealer.balance -= price * quantity
+    dealer.save()
+    prov_pers_disc, created = ProviderPersonalDiscounts.objects.get_or_create(
+        provider=cur_provider,
+        dealership=dealer,
+        defaults={"actual_discount": 0, "quantity_of_bought_cars": quantity},
+    )
+    if not created:
+        prov_pers_disc.quantity_of_bought_cars += quantity
+        prov_pers_disc.save()
+    ProviderSales.objects.create(
+        provider=cur_provider,
+        dealership=dealer,
+        car=car,
+        quantity=quantity,
+        total_price=price * quantity,
+    )
+    return True
 
 
 def search_minimal_price(dealership, preferred_cars_list):
@@ -158,41 +164,16 @@ def search_minimal_price(dealership, preferred_cars_list):
             car_discount = ProviderDiscounts.objects.filter(
                 provider=provider_stock.provider, car__car=car
             )
+            price_mult = Decimal((100 - personal_discount) / 100)
             if car_discount.exists():
-                if (
-                    provider_stock.car not in car_prices.keys()
-                    or round(
-                        car_discount.price_during_discount
-                        * Decimal((100 - personal_discount) / 100),
-                        2,
-                    )
-                    < car_prices[car][0]
-                ):
-                    car_prices[car] = (
-                        round(
-                            car_discount.price_during_discount
-                            * Decimal((100 - personal_discount) / 100),
-                            2,
-                        ),
-                        provider_stock.provider,
-                    )
+                price = round(car_discount.price_during_discount * price_mult, 2)
             else:
-                if (
-                    provider_stock.car not in car_prices.keys()
-                    or round(
-                        provider_stock.price * Decimal((100 - personal_discount) / 100),
-                        2,
-                    )
-                    < car_prices[car][0]
-                ):
-                    car_prices[car] = (
-                        round(
-                            provider_stock.price
-                            * Decimal((100 - personal_discount) / 100),
-                            2,
-                        ),
-                        provider_stock.provider,
-                    )
+                price = round(provider_stock.price * price_mult, 2)
+            if (
+                provider_stock.car not in car_prices.keys()
+                or price < car_prices[car][0]
+            ):
+                car_prices[car] = (price, provider_stock.provider)
     return car_prices
 
 
