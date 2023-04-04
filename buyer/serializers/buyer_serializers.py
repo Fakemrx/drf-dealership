@@ -15,20 +15,14 @@ User = get_user_model()
 class BuyerSerializer(serializers.ModelSerializer):
     """Serializer for Buyer model."""
 
-    account = serializers.SerializerMethodField()
-
-    def get_account(self, instance):
-        """Add main information about buyer's account"""
-        return {
-            "username": instance.username,
-            "email": instance.email,
-            "first_name": instance.first_name,
-            "last_name": instance.last_name,
-        }
+    username = serializers.CharField()
+    email = serializers.CharField()
+    first_name = serializers.CharField()
+    last_name = serializers.CharField()
 
     class Meta:
         model = Buyer
-        fields = ["account", "age", "gender", "balance", "is_active"]
+        fields = "__all__"
 
 
 class RegistrationSerializer(serializers.Serializer):
@@ -89,17 +83,3 @@ class RegistrationSerializer(serializers.Serializer):
     def validate_last_name(last_name):
         """Validation for full_name field."""
         return last_name.capitalize()
-
-
-class AuthSerializer(serializers.Serializer):
-    """Serializer for authentication."""
-
-    username = serializers.CharField()
-    password = serializers.CharField()
-
-    @staticmethod
-    def validate_username(username):
-        """Validation does user exist."""
-        if not User.objects.filter(username=username).exists():
-            raise serializers.ValidationError(f"User {username} does not exists.")
-        return username
