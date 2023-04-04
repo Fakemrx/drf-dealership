@@ -156,7 +156,10 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # Rest_framework settings
 REST_FRAMEWORK = {
-    "DEFAULT_FILTER_BACKENDS": ["django_filters.rest_framework.DjangoFilterBackend"]
+    "DEFAULT_FILTER_BACKENDS": ["django_filters.rest_framework.DjangoFilterBackend"],
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+    ],
 }
 
 # Celery settings
@@ -170,5 +173,21 @@ CELERY_BEAT_SCHEDULE = {
     "dealership_buys_preferred_cars": {
         "task": "celery_tasks.dealership_tasks.dealership_buys_preferred_cars",
         "schedule": timedelta(seconds=60),
+    },
+}
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+        },
+    },
+    "loggers": {
+        "django.db.backends": {
+            "handlers": ["console"],
+            "level": "DEBUG",
+        },
     },
 }

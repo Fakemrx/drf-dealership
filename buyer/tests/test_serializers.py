@@ -1,6 +1,8 @@
 """Serializers testing module to check correct adding data through them"""
 import pytest
+from django.db.models import F
 
+from buyer.models import Buyer
 from buyer.serializers.buyer_serializers import BuyerSerializer
 from buyer.serializers.offer_serializers import OfferSerializer
 from tests.project_fixtures import buyer, offer, car, engine
@@ -9,13 +11,23 @@ from tests.project_fixtures import buyer, offer, car, engine
 @pytest.mark.django_db
 def test_buyer_serializer(buyer):
     """Test function to check if BuyerSerializer works correctly."""
-    serializer_data = BuyerSerializer(buyer).data
+    cur_buyer = Buyer.objects.annotate(
+        username=F("account__username"),
+        email=F("account__email"),
+        first_name=F("account__first_name"),
+        last_name=F("account__last_name"),
+    ).get(account_id=buyer.account.id)
+    serializer_data = BuyerSerializer(cur_buyer).data
     expected_data = {
         "id": buyer.id,
-        "full_name": "F I O",
+        "account": buyer.account.id,
+        "username": buyer.account.username,
+        "email": buyer.account.email,
+        "first_name": buyer.account.first_name,
+        "last_name": buyer.account.last_name,
         "age": 50,
         "gender": "male",
-        "balance": "1111.00",
+        "balance": "0.00",
         "is_active": True,
     }
     assert serializer_data == expected_data, "Should be equal"

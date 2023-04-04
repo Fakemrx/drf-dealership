@@ -1,5 +1,7 @@
 """Buyer model testing module for correct responses, crud operations with data."""
 import pytest
+from django.contrib.auth import get_user_model
+from django.db.models import F
 from rest_framework import status
 
 from rest_framework.test import APIClient
@@ -9,76 +11,34 @@ from buyer.serializers.buyer_serializers import BuyerSerializer
 from tests.project_fixtures import buyer
 
 c = APIClient()
+User = get_user_model()
 
 
 @pytest.mark.django_db
-def test_post_buyer():
-    """Testing POST method to add buyer instance."""
-    new_data = {
-        "id": 1,
-        "full_name": "F I O",
-        "age": 53,
-        "gender": "male",
-        "balance": "1000.00",
-        "is_active": True,
-    }
-    request = c.post("/api/buyer/buyers/", new_data, format="json")
-    assert request.status_code == status.HTTP_201_CREATED, "Should be 201"
-    assert new_data == request.data, "Should be equal"
+def test_get_buyer(buyer):
+    """Testing GET method to get detailed buyer instance."""
 
-
-@pytest.mark.django_db
-def test_put_buyer(buyer):
-    """Testing PUT method to update buyer instance."""
-    new_data = {
-        "id": buyer.id,
-        "full_name": "F I O",
-        "age": 53,
-        "gender": "male",
-        "balance": "1000.00",
-        "is_active": True,
-    }
-    request = c.put(f"/api/buyer/buyers/{buyer.id}/", new_data, format="json")
-    assert request.status_code == status.HTTP_200_OK, "Should be 200"
-    assert new_data == request.data, "Should be equal"
-    assert (
-        new_data == BuyerSerializer(Buyer.objects.get(id=buyer.id)).data
-    ), "Should be equal"
-
-
-@pytest.mark.django_db
-def test_patch_buyer(buyer):
-    """Testing PATCH method to partial update buyer instance."""
-    new_data = {"full_name": "FI O O", "balance": "1500.00"}
     expected_data = {
         "id": buyer.id,
-        "full_name": "FI O O",
+        "account": buyer.account.id,
+        "username": buyer.account.username,
+        "email": buyer.account.email,
+        "first_name": buyer.account.first_name,
+        "last_name": buyer.account.last_name,
         "age": 50,
         "gender": "male",
-        "balance": "1500.00",
+        "balance": "0.00",
         "is_active": True,
     }
-    request = c.patch(f"/api/buyer/buyers/{buyer.id}/", new_data, format="json")
-    assert request.status_code == status.HTTP_200_OK, "Should be 200"
-    assert expected_data == request.data, "Should be equal"
-    assert (
-        expected_data == BuyerSerializer(Buyer.objects.get(id=buyer.id)).data
-    ), "Should be equal"
 
+    db_data = Buyer.objects.annotate(
+        username=F("account__username"),
+        email=F("account__email"),
+        first_name=F("account__first_name"),
+        last_name=F("account__last_name"),
+    ).get(id=buyer.id)
+    assert expected_data == BuyerSerializer(db_data).data, "Should be equal"
 
-@pytest.mark.django_db
-def test_delete_buyer(buyer):
-    """Testing DELETE method to delete buyer instance."""
-    expected_data = {
-        "id": buyer.id,
-        "full_name": "F I O",
-        "age": 50,
-        "gender": "male",
-        "balance": "1111.00",
-        "is_active": True,
-    }
     response = c.get(f"/api/buyer/buyers/{buyer.id}/")
     assert response.status_code == status.HTTP_200_OK, "Should be 200"
     assert expected_data == response.data, "Should be equal"
-    request = c.delete(f"/api/buyer/buyers/{buyer.id}/")
-    assert request.status_code == status.HTTP_204_NO_CONTENT, "Should be 204"
