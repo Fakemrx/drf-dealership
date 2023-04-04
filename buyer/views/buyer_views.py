@@ -3,16 +3,19 @@ from django.contrib.auth import get_user_model
 from django.db.models import F
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters, status
+from rest_framework.generics import get_object_or_404
 from rest_framework.mixins import RetrieveModelMixin, ListModelMixin
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import GenericViewSet
+from rest_framework_simplejwt.authentication import JWTAuthentication
 
 from buyer.filters import BuyerFilter
 from buyer.models import Buyer
 from buyer.serializers.buyer_serializers import (
     BuyerSerializer,
     RegistrationSerializer,
+    BalanceSerializer,
 )
 from buyer.services import create_buyer_and_user
 
@@ -59,3 +62,30 @@ class RegistrationAPIView(APIView):
             },
             status=status.HTTP_201_CREATED,
         )
+
+
+class BalanceUpdateAPIView(APIView):
+    """APIView for changing balance. It gets access_token from headers,
+    then it tries to check and find user, if it exists and no errors were
+    occurred it will update buyer's balance."""
+
+    authentication_classes = [JWTAuthentication]
+    serializer_class = BalanceSerializer
+
+    def post(self, request):
+        """Updates buyer's balance."""
+        serializer = BalanceSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        value = serializer.validated_data["value_of_money"]
+        token = request.headers.get("Authorization", "").split(" ")[-1]
+        jwt_auth = JWTAuthentication()
+        decoded_token = jwt_auth.get_validated_token(raw_token=token)
+        user = jwt_auth.get_user(validated_token=decoded_token)
+        user_id = user.id
+        buyer = get_object_or_404(Buyer, account=user_id)
+
+        buyer.balance += value
+        buyer.save()
+
+        return Response({"message": f"Balance updated to {buyer.balance}"})
