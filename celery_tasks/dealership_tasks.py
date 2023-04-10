@@ -3,6 +3,7 @@ from decimal import Decimal
 
 from celery import shared_task
 from celery.utils.log import get_task_logger
+from django.db.models import Q
 
 logger = get_task_logger(__name__)
 
@@ -18,13 +19,11 @@ def dealership_buys_preferred_cars():
     from dealership.models import CarDealership
 
     for dealership in CarDealership.objects.all():
+        cars_list = set()
         if dealership.preferred_cars_list.all():
-            car_prices = search_minimal_price(
-                dealership, dealership.preferred_cars_list.all()
-            )
-        else:
-            cars_list = search_suitable_cars(dealership)
-            car_prices = search_minimal_price(dealership, cars_list)
+            cars_list = set(dealership.preferred_cars_list.all())
+        cars_list.update(search_suitable_cars(dealership))
+        car_prices = search_minimal_price(dealership, cars_list)
         if car_prices:
             balance_per_car = round(dealership.balance / len(car_prices), 2)
             if buy_preferred_cars(car_prices, balance_per_car, dealership) == 0:
@@ -35,53 +34,20 @@ def search_suitable_cars(dealership):
     """Search suitable cars according to car specs."""
     from car.models import Car
 
-    cars_suitable_by_specs = []
-    num_of_specs = 0
+    query_conditions = Q()
     if dealership.preferred_car_release_year_from:
-        num_of_specs += 1
-        for car in Car.objects.filter(
+        query_conditions &= Q(
             release_year__gte=dealership.preferred_car_release_year_from
-        ):
-            cars_suitable_by_specs.append(car)
+        )
     if dealership.preferred_car_release_year_to:
-        num_of_specs += 1
-        for car in Car.objects.filter(
+        query_conditions &= Q(
             release_year__lte=dealership.preferred_car_release_year_to
-        ):
-            cars_suitable_by_specs.append(car)
+        )
     if dealership.preferred_car_type:
-        num_of_specs += 1
-        for car in Car.objects.filter(car_type=dealership.preferred_car_type):
-            cars_suitable_by_specs.append(car)
+        query_conditions &= Q(car_type=dealership.preferred_car_type)
     if dealership.preferred_fuel_type:
-        num_of_specs += 1
-        for car in Car.objects.filter(engine__fuel_type=dealership.preferred_fuel_type):
-            cars_suitable_by_specs.append(car)
-    suitable_cars = suitable_cars_list_filter(cars_suitable_by_specs, num_of_specs)
-    return suitable_cars
-
-
-def suitable_cars_list_filter(
-    cars_suitable_by_specs,
-    num_of_specs,
-):
-    """
-    Filters only cars that match final search.
-    Function looks at quantity of exact car in cars_suitable_by_specs and
-    compares it to the num_of_specs, if it equals - the car matches all
-    the specified parameters, if it's quantity lower than needed - this car
-    does not suit our "filters" and will not be added to the final list.
-    Args:
-    cars_suitable_by_specs - list of filtered cars
-    num_of_specs - total quantity of specs
-    """
-    suitable_cars = []
-    for car in cars_suitable_by_specs:
-        if (
-            cars_suitable_by_specs.count(car) == num_of_specs
-            and car not in suitable_cars
-        ):
-            suitable_cars.append(car)
+        query_conditions &= Q(engine__fuel_type=dealership.preferred_fuel_type)
+    suitable_cars = set(Car.objects.filter(query_conditions))
     return suitable_cars
 
 
