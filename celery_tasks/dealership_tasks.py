@@ -26,8 +26,7 @@ def dealership_buys_preferred_cars():
         car_prices = search_minimal_price(dealership, cars_list)
         if car_prices:
             balance_per_car = round(dealership.balance / len(car_prices), 2)
-            if buy_preferred_cars(car_prices, balance_per_car, dealership) == 0:
-                buy_preferred_cars(car_prices, dealership.balance, dealership)
+            buy_preferred_cars(car_prices, balance_per_car, dealership)
 
 
 def search_suitable_cars(dealership):
@@ -57,7 +56,6 @@ def buy_preferred_cars(car_prices, balance_per_car, dealer):
     and balance per car.
     """
 
-    cars_bought = 0
     for car, price_and_provider in car_prices.items():
         for quantity in range(5, 0, -1):
             # Try to buy 5 cars, if a dealer does not have enough money
@@ -68,9 +66,7 @@ def buy_preferred_cars(car_prices, balance_per_car, dealer):
                 dealer, price_and_provider, quantity, car, balance_per_car
             )
             if success:
-                cars_bought += quantity
                 break
-    return cars_bought
 
 
 def data_entries(dealer, price_and_provider, quantity, car, balance_per_car):
