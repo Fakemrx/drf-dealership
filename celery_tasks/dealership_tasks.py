@@ -19,14 +19,12 @@ def dealership_buys_preferred_cars():
     from dealership.models import CarDealership
 
     for dealership in CarDealership.objects.all():
-        cars_list = set()
-        if dealership.preferred_cars_list.all():
-            cars_list = set(dealership.preferred_cars_list.all())
+        cars_list = set(dealership.preferred_cars_list.all())
         cars_list.update(search_suitable_cars(dealership))
-        car_prices = search_minimal_price(dealership, cars_list)
-        if car_prices:
-            balance_per_car = round(dealership.balance / len(car_prices), 2)
-            buy_preferred_cars(car_prices, balance_per_car, dealership)
+        cars_prices_prov = search_minimal_price(dealership, cars_list)
+        if cars_prices_prov:
+            balance_per_car = round(dealership.balance / len(cars_prices_prov), 2)
+            buy_preferred_cars(cars_prices_prov, balance_per_car, dealership)
 
 
 def search_suitable_cars(dealership):
@@ -50,13 +48,13 @@ def search_suitable_cars(dealership):
     return suitable_cars
 
 
-def buy_preferred_cars(car_prices, balance_per_car, dealer):
+def buy_preferred_cars(cars_prices_prov, balance_per_car, dealer):
     """
     Buy cars for exact dealer, according to the best car prices
     and balance per car.
     """
 
-    for car, price_and_provider in car_prices.items():
+    for car, price_and_provider in cars_prices_prov.items():
         for quantity in range(5, 0, -1):
             # Try to buy 5 cars, if a dealer does not have enough money
             # (balance_per_car) to buy 5 of them, the quantity will be reduced
@@ -117,7 +115,7 @@ def search_minimal_price(dealership, preferred_cars_list):
     """Find minimal car prices from a transmitted dealership."""
     from provider.models import CarsInProviderStock, ProviderDiscounts
 
-    car_prices = {}
+    cars_prices_prov = {}
     for car in preferred_cars_list:
         for provider_stock in CarsInProviderStock.objects.filter(car=car):
             personal_discount = get_personal_discount(
@@ -132,11 +130,11 @@ def search_minimal_price(dealership, preferred_cars_list):
             else:
                 price = round(provider_stock.price * price_mult, 2)
             if (
-                provider_stock.car not in car_prices.keys()
-                or price < car_prices[car][0]
+                provider_stock.car not in cars_prices_prov.keys()
+                or price < cars_prices_prov[car][0]
             ):
-                car_prices[car] = (price, provider_stock.provider)
-    return car_prices
+                cars_prices_prov[car] = (price, provider_stock.provider)
+    return cars_prices_prov
 
 
 def get_personal_discount(provider, dealership):
