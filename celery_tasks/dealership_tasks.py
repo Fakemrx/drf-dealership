@@ -1,4 +1,4 @@
-"""Main tasks of all project."""
+"""Dealership tasks to buy cars from providers."""
 from decimal import Decimal
 
 from celery import shared_task
