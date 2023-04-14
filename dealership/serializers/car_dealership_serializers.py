@@ -13,10 +13,7 @@ class CarDealershipSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         rep = super().to_representation(instance)
-        cars = []
-        dealer = CarDealership.objects.get(id=instance.id)
-        if dealer.preferred_cars_list.all():
-            for car in dealer.preferred_cars_list.all():
-                cars.append(str(car))
-        rep["preferred_cars_list"] = cars
+        rep["preferred_cars_list"] = [
+            str(car) for car in instance.preferred_cars_list.all()
+        ]
         return rep
