@@ -25,6 +25,20 @@ class BuyerSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
+class BalanceSerializer(serializers.Serializer):
+    """Serializer for updating buyer's balance."""
+
+    card_number = serializers.CharField(max_length=16, min_length=16)
+    card_owner = serializers.CharField(max_length=100)
+    card_cvc_code = serializers.IntegerField(
+        max_value=999, style={"input_type": "password"}
+    )
+    card_password = serializers.IntegerField(
+        max_value=9999, min_value=1000, style={"input_type": "password"}
+    )
+    value_of_money = serializers.IntegerField(max_value=100000, min_value=0)
+
+
 class RegistrationSerializer(serializers.Serializer):
     """Serializer for User model."""
 
