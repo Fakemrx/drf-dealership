@@ -12,7 +12,9 @@ from dealership.serializers.car_dealership_serializers import CarDealershipSeria
 class CarDealershipAPIView(GenericViewSet, ListModelMixin, RetrieveModelMixin):
     """APIView for list and detail view for CarDealership model."""
 
-    queryset = CarDealership.objects.all()
+    queryset = CarDealership.objects.prefetch_related(
+        "preferred_cars_list", "preferred_cars_list__engine"
+    )
     serializer_class = CarDealershipSerializer
     filter_backends = [
         DjangoFilterBackend,

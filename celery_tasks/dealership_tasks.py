@@ -3,6 +3,7 @@ from decimal import Decimal
 
 from celery import shared_task
 from celery.utils.log import get_task_logger
+from django.db.models import Q
 
 logger = get_task_logger(__name__)
 
@@ -18,107 +19,87 @@ def dealership_buys_preferred_cars():
     from dealership.models import CarDealership
 
     for dealership in CarDealership.objects.all():
-        if dealership.preferred_cars_list.all():
-            car_prices = search_minimal_price(
-                dealership, dealership.preferred_cars_list.all()
-            )
-        else:
-            cars_list = search_suitable_cars(dealership)
-            car_prices = search_minimal_price(dealership, cars_list)
-        if car_prices:
-            balance_per_car = round(dealership.balance / len(car_prices), 2)
-            if buy_preferred_cars(car_prices, balance_per_car, dealership) == 0:
-                buy_preferred_cars(car_prices, dealership.balance, dealership)
+        cars_list = set(dealership.preferred_cars_list.all())
+        cars_list.update(search_suitable_cars(dealership))
+        cars_prices_prov = search_minimal_price(dealership, cars_list)
+        if cars_prices_prov:
+            balance_per_car = round(dealership.balance / len(cars_prices_prov), 2)
+            buy_preferred_cars(cars_prices_prov, balance_per_car, dealership)
 
 
 def search_suitable_cars(dealership):
     """Search suitable cars according to car specs."""
     from car.models import Car
 
-    cars_suitable_by_specs = []
-    num_of_specs = 0
+    query_conditions = Q()
     if dealership.preferred_car_release_year_from:
-        num_of_specs += 1
-        for car in Car.objects.filter(
+        query_conditions &= Q(
             release_year__gte=dealership.preferred_car_release_year_from
-        ):
-            cars_suitable_by_specs.append(car)
+        )
     if dealership.preferred_car_release_year_to:
-        num_of_specs += 1
-        for car in Car.objects.filter(
+        query_conditions &= Q(
             release_year__lte=dealership.preferred_car_release_year_to
-        ):
-            cars_suitable_by_specs.append(car)
+        )
     if dealership.preferred_car_type:
-        num_of_specs += 1
-        for car in Car.objects.filter(car_type=dealership.preferred_car_type):
-            cars_suitable_by_specs.append(car)
+        query_conditions &= Q(car_type=dealership.preferred_car_type)
     if dealership.preferred_fuel_type:
-        num_of_specs += 1
-        for car in Car.objects.filter(engine__fuel_type=dealership.preferred_fuel_type):
-            cars_suitable_by_specs.append(car)
-    suitable_cars = suitable_cars_list_filter(cars_suitable_by_specs, num_of_specs)
+        query_conditions &= Q(engine__fuel_type=dealership.preferred_fuel_type)
+    suitable_cars = set(Car.objects.filter(query_conditions))
     return suitable_cars
 
 
-def suitable_cars_list_filter(
-    cars_suitable_by_specs,
-    num_of_specs,
-):
-    """
-    Filters only cars that match final search.
-    Function looks at quantity of exact car in cars_suitable_by_specs and
-    compares it to the num_of_specs, if it equals - the car matches all
-    the specified parameters, if it's quantity lower than needed - this car
-    does not suit our "filters" and will not be added to the final list.
-    Args:
-    cars_suitable_by_specs - list of filtered cars
-    num_of_specs - total quantity of specs
-    """
-    suitable_cars = []
-    for car in cars_suitable_by_specs:
-        if (
-            cars_suitable_by_specs.count(car) == num_of_specs
-            and car not in suitable_cars
-        ):
-            suitable_cars.append(car)
-    return suitable_cars
-
-
-def buy_preferred_cars(car_prices, balance_per_car, dealer):
+def buy_preferred_cars(cars_prices_prov, balance_per_car, dealer):
     """
     Buy cars for exact dealer, according to the best car prices
     and balance per car.
     """
-
-    cars_bought = 0
-    for car, price_and_provider in car_prices.items():
-        for quantity in range(5, 0, -1):
-            # Try to buy 5 cars, if a dealer does not have enough money
-            # (balance_per_car) to buy 5 of them, the quantity will be reduced
-            # by 1 and will do that until 2 cases: dealer will buy *quantity*
-            # cars or *quantity* will be reduced up to 0.
-            success = data_entries(
-                dealer, price_and_provider, quantity, car, balance_per_car
-            )
-            if success:
-                cars_bought += quantity
-                break
-    return cars_bought
+    actual_balance, cars_quantity_to_buy = calculate_buy_request(
+        dealer, cars_prices_prov, balance_per_car
+    )
+    for car, price_and_provider in cars_prices_prov.items():
+        if car in cars_quantity_to_buy.keys():
+            data_entries(dealer, price_and_provider, cars_quantity_to_buy[car], car)
+    dealer.balance = actual_balance
+    dealer.save()
 
 
-def data_entries(dealer, price_and_provider, quantity, car, balance_per_car):
+def calculate_buy_request(dealer, cars_prices_prov, balance_per_car):
+    """
+    Calculates possible buy request that tries to buy every car
+    at least one time.
+    """
+    cars_quantity_to_buy = {}
+    balance_left_free = dealer.balance
+    not_bought_list = []
+    for _ in range(1, 6):
+        for car, price_and_provider in cars_prices_prov.items():
+            if (
+                price_and_provider[0] <= balance_per_car
+                and balance_left_free - price_and_provider[0] >= 0
+            ):
+                balance_left_free -= price_and_provider[0]
+                if car in cars_quantity_to_buy.keys():
+                    cars_quantity_to_buy[car] += 1
+                else:
+                    cars_quantity_to_buy[car] = 1
+            else:
+                not_bought_list.append(car)
+        if not_bought_list:
+            left_balance_per_car = round(balance_left_free / len(not_bought_list), 2)
+            for car in not_bought_list:
+                if left_balance_per_car > cars_prices_prov[car][0]:
+                    cars_quantity_to_buy[car] = 1
+                    balance_left_free -= cars_prices_prov[car][0]
+    return balance_left_free, cars_quantity_to_buy
+
+
+def data_entries(dealer, price_and_provider, quantity, car):
     """
     Rewrites dealer balance after cars were bought, rewrites quantity of bought
     cars in model for personal discounts, creates an entry in ProviderSales.
     """
     from provider.models import ProviderPersonalDiscounts, ProviderSales
     from dealership.models import CarsInDealershipStock
-
-    price = price_and_provider[0]
-    cur_provider = price_and_provider[1]
-    if price * quantity > balance_per_car:
-        return False
 
     dealer_stock, created = CarsInDealershipStock.objects.get_or_create(
         dealership=dealer,
@@ -131,22 +112,22 @@ def data_entries(dealer, price_and_provider, quantity, car, balance_per_car):
     if not created:
         dealer_stock.quantity += quantity
         dealer_stock.save()
-    dealer.balance -= price * quantity
-    dealer.save()
+
     prov_pers_disc, created = ProviderPersonalDiscounts.objects.get_or_create(
-        provider=cur_provider,
+        provider=price_and_provider[1],
         dealership=dealer,
         defaults={"actual_discount": 0, "quantity_of_bought_cars": quantity},
     )
     if not created:
         prov_pers_disc.quantity_of_bought_cars += quantity
         prov_pers_disc.save()
+
     ProviderSales.objects.create(
-        provider=cur_provider,
+        provider=price_and_provider[1],
         dealership=dealer,
         car=car,
         quantity=quantity,
-        total_price=price * quantity,
+        total_price=price_and_provider[0] * quantity,
     )
     return True
 
@@ -154,36 +135,30 @@ def data_entries(dealer, price_and_provider, quantity, car, balance_per_car):
 def search_minimal_price(dealership, preferred_cars_list):
     """Find minimal car prices from a transmitted dealership."""
     from provider.models import CarsInProviderStock, ProviderDiscounts
+    from provider.models import ProviderPersonalDiscounts
 
-    car_prices = {}
+    cars_prices_prov = {}
     for car in preferred_cars_list:
         for provider_stock in CarsInProviderStock.objects.filter(car=car):
-            personal_discount = get_personal_discount(
-                provider_stock.provider, dealership
+            personal_discount = 0
+            discount = ProviderPersonalDiscounts.objects.filter(
+                dealership=dealership, provider=provider_stock.provider
             )
+            if discount.exists():
+                personal_discount = discount.first().actual_discount
             car_discount = ProviderDiscounts.objects.filter(
                 provider=provider_stock.provider, car__car=car
             )
             price_mult = Decimal((100 - personal_discount) / 100)
             if car_discount.exists():
-                price = round(car_discount.price_during_discount * price_mult, 2)
+                price = round(
+                    car_discount.first().price_during_discount * price_mult, 2
+                )
             else:
                 price = round(provider_stock.price * price_mult, 2)
             if (
-                provider_stock.car not in car_prices.keys()
-                or price < car_prices[car][0]
+                provider_stock.car not in cars_prices_prov.keys()
+                or price < cars_prices_prov[car][0]
             ):
-                car_prices[car] = (price, provider_stock.provider)
-    return car_prices
-
-
-def get_personal_discount(provider, dealership):
-    """Find if there are any personal discounts for a current dealership."""
-    from provider.models import ProviderPersonalDiscounts
-
-    personal_discount = ProviderPersonalDiscounts.objects.filter(
-        dealership=dealership, provider=provider
-    )
-    if personal_discount.exists():
-        return personal_discount.first().actual_discount
-    return 0
+                cars_prices_prov[car] = (price, provider_stock.provider)
+    return cars_prices_prov
