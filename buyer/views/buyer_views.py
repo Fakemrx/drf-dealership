@@ -8,10 +8,10 @@ from rest_framework.mixins import RetrieveModelMixin, ListModelMixin
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import GenericViewSet
-from rest_framework_simplejwt.authentication import JWTAuthentication
 
 from buyer.filters import BuyerFilter
 from buyer.models import Buyer
+from buyer.permissions import IsSameUserAuthenticated
 from buyer.serializers.buyer_serializers import (
     BuyerSerializer,
     RegistrationSerializer,
@@ -25,6 +25,7 @@ User = get_user_model()
 class BuyerRetrieveAPIView(GenericViewSet, RetrieveModelMixin, ListModelMixin):
     """APIView for list and detail operations with Buyer model."""
 
+    permission_classes = [IsSameUserAuthenticated]
     queryset = Buyer.objects.annotate(
         username=F("account__username"),
         email=F("account__email"),
@@ -69,23 +70,19 @@ class BalanceUpdateAPIView(APIView):
     then it tries to check and find user, if it exists and no errors were
     occurred it will update buyer's balance."""
 
-    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsSameUserAuthenticated]
     serializer_class = BalanceSerializer
 
     def post(self, request):
         """Updates buyer's balance."""
         serializer = BalanceSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-
         value = serializer.validated_data["value_of_money"]
-        token = request.headers.get("Authorization", "").split(" ")[-1]
-        jwt_auth = JWTAuthentication()
-        decoded_token = jwt_auth.get_validated_token(raw_token=token)
-        user = jwt_auth.get_user(validated_token=decoded_token)
-        user_id = user.id
-        buyer = get_object_or_404(Buyer, account=user_id)
+        buyer = get_object_or_404(Buyer, account=request.user.id)
 
         buyer.balance += value
         buyer.save()
 
-        return Response({"message": f"Balance updated to {buyer.balance}"})
+        return Response(
+            {"message": f"{request.user}'s balance updated to {buyer.balance}"}
+        )
