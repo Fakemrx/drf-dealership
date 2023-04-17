@@ -1,4 +1,5 @@
 """Fixtures for all project tests"""
+
 import pytest
 from django.contrib.auth import get_user_model
 
@@ -59,7 +60,6 @@ def offer(car, buyer):
         buyer=buyer,
         car=car,
         max_cost=5637,
-        quantity=1,
         is_active=True,
     )
     return offer

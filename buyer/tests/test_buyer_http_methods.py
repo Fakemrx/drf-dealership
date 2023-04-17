@@ -8,6 +8,7 @@ from rest_framework.test import APIClient
 
 from buyer.models import Buyer
 from buyer.serializers.buyer_serializers import BuyerSerializer
+from tests.get_token import get_user_token
 from tests.project_fixtures import buyer
 
 c = APIClient()
@@ -38,15 +39,6 @@ def test_get_buyer(buyer):
         last_name=F("account__last_name"),
     ).get(id=buyer.id)
     assert expected_data == BuyerSerializer(db_data).data, "Should be equal"
-
-    user_token = c.post(
-        "/api/buyer/token/",
-        data={"username": buyer.account.username, "password": "TestPass123"},
-    ).data["access"]
-
-    response = c.get(
-        f"/api/buyer/buyers/{buyer.id}/",
-        headers={"Authorization": f"Token {user_token}"},
-    )
+    response = c.get("/api/buyer/buyers/")
     assert response.status_code == status.HTTP_200_OK, "Should be 200"
-    assert expected_data == response.data, "Should be equal"
+    assert expected_data == dict(response.data[0]), "Should be equal"

@@ -17,6 +17,7 @@ import typing
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 from celery.schedules import crontab
 from celery_tasks.dealership_tasks import dealership_buys_preferred_cars
+from celery_tasks.buyer_tasks import user_buy_car_on_offer_create, buy_queued_cars
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -186,7 +187,11 @@ CELERY_RESULT_BACKEND = os.environ.get(
 CELERY_BEAT_SCHEDULE = {
     "dealership_buys_preferred_cars": {
         "task": "celery_tasks.dealership_tasks.dealership_buys_preferred_cars",
-        "schedule": timedelta(seconds=60),
+        "schedule": timedelta(minutes=10),
+    },
+    "buy_queued_cars": {
+        "task": "celery_tasks.buyer_tasks.buy_queued_cars",
+        "schedule": timedelta(minutes=10),
     },
 }
 

@@ -54,7 +54,7 @@ class CarDealership(models.Model):
 
 class CarsInDealershipStock(models.Model):
     """
-    Model of availability of cars in dealership's stock, includes dealership, car,
+    Model of availability of cars in a dealership's stock, includes a dealership, car,
     quantity of vehicles in stock and price of each one.
     """
 
@@ -83,7 +83,7 @@ class DealershipDiscounts(models.Model):
         CarDealership, on_delete=models.CASCADE, verbose_name="Dealership"
     )
     car = models.ForeignKey(
-        CarsInDealershipStock, on_delete=models.CASCADE, verbose_name="Car in stock"
+        "car.Car", on_delete=models.CASCADE, verbose_name="Car in stock"
     )
     discount_date_from = models.DateField(verbose_name="Date of promotion start")
     discount_date_to = models.DateField(verbose_name="Date of promotion ending")
@@ -98,7 +98,7 @@ class DealershipDiscounts(models.Model):
     def __str__(self):
         return (
             f"{self.dealer.name} have a discount from {self.discount_date_from} to "
-            f"{self.discount_date_to} a {self.car.car} - {self.price_during_discount} USD"
+            f"{self.discount_date_to} a {self.car} - {self.price_during_discount} USD"
         )
 
 
@@ -121,7 +121,7 @@ class DealershipPersonalDiscounts(models.Model):
 
     def __str__(self):
         return (
-            f"For all time {self.buyer.account.name} bought {self.quantity_of_bought_cars}"
+            f"For all time {self.buyer.account} bought {self.quantity_of_bought_cars}"
             f" cars from {self.dealer.name}. Actual discount - {self.actual_discount}"
         )
 
@@ -139,7 +139,6 @@ class DealerSales(models.Model):
         "buyer.Buyer", on_delete=models.CASCADE, verbose_name="Buyer"
     )
     car = models.ForeignKey("car.Car", on_delete=models.CASCADE, verbose_name="Car")
-    quantity = models.IntegerField(verbose_name="Quantity of cars")
     total_price = models.DecimalField(
         max_digits=8, decimal_places=2, verbose_name="Total price"
     )
@@ -147,7 +146,7 @@ class DealerSales(models.Model):
 
     def __str__(self):
         return (
-            f"{self.dealer.name} sold {self.quantity} {self.car} to "
-            f"{self.buyer.account.name} with total price: {self.total_price} USD |"
+            f"{self.dealer.name} sold {self.car} to "
+            f"{self.buyer.account} with total price: {self.total_price} USD |"
             f"{self.sell_date}"
         )
