@@ -70,14 +70,15 @@ def calculate_buy_request(dealer, cars_prices_prov, balance_per_car):
     """
     cars_quantity_to_buy = {}
     balance_left_free = dealer.balance
-    not_bought_list = []
-    for _ in range(1, 6):
+    total_quantity = 0
+    while True:
+        quantity_on_start = total_quantity
+        not_bought_list = []
         for car, price_and_provider in cars_prices_prov.items():
-            if (
-                price_and_provider[0] <= balance_per_car
-                and balance_left_free - price_and_provider[0] >= 0
-            ):
-                balance_left_free -= price_and_provider[0]
+            car_price = price_and_provider[0]
+            if car_price <= balance_per_car and balance_left_free - car_price >= 0:
+                balance_left_free -= car_price
+                total_quantity += 1
                 if car in cars_quantity_to_buy.keys():
                     cars_quantity_to_buy[car] += 1
                 else:
@@ -85,11 +86,13 @@ def calculate_buy_request(dealer, cars_prices_prov, balance_per_car):
             else:
                 not_bought_list.append(car)
         if not_bought_list:
-            left_balance_per_car = round(balance_left_free / len(not_bought_list), 2)
             for car in not_bought_list:
-                if left_balance_per_car > cars_prices_prov[car][0]:
+                if balance_left_free > cars_prices_prov[car][0]:
+                    total_quantity += 1
                     cars_quantity_to_buy[car] = 1
                     balance_left_free -= cars_prices_prov[car][0]
+        if quantity_on_start == total_quantity:
+            break
     return balance_left_free, cars_quantity_to_buy
 
 
@@ -129,7 +132,6 @@ def data_entries(dealer, price_and_provider, quantity, car):
         quantity=quantity,
         total_price=price_and_provider[0] * quantity,
     )
-    return True
 
 
 def search_minimal_price(dealership, preferred_cars_list):
