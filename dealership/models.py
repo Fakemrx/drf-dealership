@@ -49,3 +49,24 @@ class CarDealership(models.Model):
         else:
             result += "Active"
         return result
+
+
+class CarsInDealershipStock(models.Model):
+    """
+    Model of availability of cars in dealership's stock, includes dealership, car,
+    quantity of vehicles in stock and price of each one.
+    """
+
+    dealership = models.ForeignKey(
+        CarDealership, on_delete=models.CASCADE, verbose_name="Dealership"
+    )
+    car = models.ForeignKey("car.Car", on_delete=models.CASCADE, verbose_name="Car")
+    quantity = models.IntegerField(verbose_name="Quantity of cars")
+    price = models.DecimalField(
+        max_digits=8, decimal_places=2, verbose_name="Car price"
+    )
+
+    def __str__(self):
+        return (
+            f"{self.dealership.name} has {self.quantity} {self.car} | {self.price} USD"
+        )

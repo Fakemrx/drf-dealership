@@ -19,7 +19,7 @@ services:
   celery:
     build: .
     container_name: celery_cont
-    command: celery -A DRFTestTask worker -l info
+    command: celery -A celery_tasks worker -l info
     volumes:
       - ./:/usr/src/app/
     links:
@@ -34,7 +34,7 @@ services:
   celery-beat:
     build: .
     container_name: celery_beat_cont
-    command: celery -A DRFTestTask beat -l info
+    command: celery -A celery_tasks beat -l info
     volumes:
       - ./:/usr/src/app/
     env_file:

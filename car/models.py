@@ -22,8 +22,8 @@ class CarTypes(Enum):
 
 class Car(models.Model):
     """
-    Model of car, includes car brand, model, release year, types such as: car, gearbox,
-    drivetrain, engine, also seat places and car status (active or not).
+    Model of car, includes car brand, model, release year,
+    car type, engine, car status (active or not).
     """
 
     car_brand = models.CharField(max_length=30, verbose_name="Car brand")
@@ -36,10 +36,11 @@ class Car(models.Model):
     )
     engine = models.ForeignKey("car.Engine", null=True, on_delete=models.SET_NULL)
 
-    is_active = models.BooleanField(default=True, verbose_name="Is active")
-
     def __str__(self):
-        return f"{self.car_brand} {self.car_model} {self.release_year}"
+        return (
+            f"Car {self.car_brand} {self.car_model} {self.release_year} | Type: "
+            f"{CarTypes[f'{self.car_type}'].value} | Engine: {self.engine}"
+        )
 
 
 class TankTypes(Enum):
@@ -54,8 +55,8 @@ class TankTypes(Enum):
 
 class Engine(models.Model):
     """
-    Model of engine, attached to some cars, includes fuel type,
-    engine type, volume, H.P., torque.
+    Model of engine, includes fuel type,
+    engine type, volume, H.P..
     """
 
     engine_brand = models.CharField(max_length=30, verbose_name="Engine brand")
@@ -68,7 +69,6 @@ class Engine(models.Model):
         max_digits=3, decimal_places=1, verbose_name="Engine volume"
     )
     hp = models.IntegerField(null=True, blank=True, verbose_name="Engine horse powers")
-    is_active = models.BooleanField(default=True, verbose_name="Is active")
 
     def __str__(self):
         return (

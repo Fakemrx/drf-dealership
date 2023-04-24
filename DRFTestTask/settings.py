@@ -10,12 +10,13 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 import os
+from datetime import timedelta
 from pathlib import Path
 import typing
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 from celery.schedules import crontab
-import DRFTestTask.tasks
+from celery_tasks.dealership_tasks import dealership_buys_preferred_cars
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -169,9 +170,9 @@ CELERY_RESULT_BACKEND = os.environ.get(
 
 # Celery-beat settings
 CELERY_BEAT_SCHEDULE = {
-    "sample_task": {
-        "task": "DRFTestTask.tasks.sample_task",
-        "schedule": crontab(minute="*/1"),
+    "dealership_buys_preferred_cars": {
+        "task": "celery_tasks.dealership_tasks.dealership_buys_preferred_cars",
+        "schedule": timedelta(seconds=60),
     },
 }
 
