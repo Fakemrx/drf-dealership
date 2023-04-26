@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     "django_filters",
     "rest_framework",
     "django_countries",
+    "drf_yasg",
     "car",
     "buyer",
     "provider",
@@ -178,7 +179,7 @@ CELERY_BEAT_SCHEDULE = {
 
 LOGGING = {
     "version": 1,
-    "disable_existing_loggers": False,
+    "disable_existing_loggers": True,
     "handlers": {
         "console": {
             "class": "logging.StreamHandler",
