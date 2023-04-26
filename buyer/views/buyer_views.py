@@ -3,6 +3,7 @@ from django.contrib.auth import get_user_model
 from django.db.models import F
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters, status
+from rest_framework.decorators import action
 from rest_framework.generics import get_object_or_404
 from rest_framework.mixins import RetrieveModelMixin, ListModelMixin
 from rest_framework.response import Response
@@ -11,7 +12,7 @@ from rest_framework.viewsets import GenericViewSet
 
 from buyer.filters import BuyerFilter
 from buyer.models import Buyer
-from buyer.permissions import IsSameUserAuthenticated
+from buyer.permissions import IsOwner
 from buyer.serializers.buyer_serializers import (
     BuyerSerializer,
     RegistrationSerializer,
@@ -25,7 +26,7 @@ User = get_user_model()
 class BuyerRetrieveAPIView(GenericViewSet, RetrieveModelMixin, ListModelMixin):
     """APIView for list and detail operations with Buyer model."""
 
-    permission_classes = [IsSameUserAuthenticated]
+    permission_classes = [IsOwner]
     queryset = Buyer.objects.annotate(
         username=F("account__username"),
         email=F("account__email"),
@@ -70,9 +71,15 @@ class BalanceUpdateAPIView(APIView):
     then it tries to check and find user, if it exists and no errors were
     occurred it will update buyer's balance."""
 
-    permission_classes = [IsSameUserAuthenticated]
+    permission_classes = [IsOwner]
     serializer_class = BalanceSerializer
 
+    @action(
+        detail=True,
+        methods=["POST", "GET"],
+        permission_classes=[IsOwner],
+        serializer_class=BalanceSerializer,
+    )
     def post(self, request):
         """Updates buyer's balance."""
         serializer = BalanceSerializer(data=request.data)

@@ -2,7 +2,7 @@
 from rest_framework import permissions
 
 
-class IsSameUserAuthenticated(permissions.BasePermission):
+class IsOwner(permissions.BasePermission):
     """
     Permission that checks is user, that wants to increase balance
     the same as user, that owns an account.
