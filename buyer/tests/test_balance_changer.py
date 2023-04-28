@@ -19,8 +19,8 @@ def test_balance_increase(buyer):
         data={"username": buyer.account.username, "password": "TestPass123"},
     ).data["access"]
     money = 20000
-    request = c.post(
-        "/api/buyer/balance/",
+    request = c.put(
+        "/api/buyer/buyers/balance/",
         data={
             "card_number": "1213141516171819",
             "card_owner": "Random Name",
