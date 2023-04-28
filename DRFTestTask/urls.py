@@ -16,6 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from django.views.generic.base import TemplateView
+from .yasg import urlpatterns as swagger_urls
 
 urlpatterns = [
     path("admin/", admin.site.urls, name="admin"),
@@ -25,3 +26,5 @@ urlpatterns = [
     path("api/provider/", include("provider.urls"), name="provider"),
     path("api/dealer/", include("dealership.urls"), name="dealer"),
 ]
+
+urlpatterns += swagger_urls
