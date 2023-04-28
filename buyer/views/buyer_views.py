@@ -2,6 +2,7 @@
 from django.contrib.auth import get_user_model
 from django.db.models import F
 from django_filters.rest_framework import DjangoFilterBackend
+from drf_yasg.utils import swagger_auto_schema
 from rest_framework import filters, status
 from rest_framework.generics import get_object_or_404
 from rest_framework.mixins import RetrieveModelMixin, ListModelMixin
@@ -44,6 +45,7 @@ class BuyerRetrieveAPIView(GenericViewSet, RetrieveModelMixin, ListModelMixin):
     filterset_class = BuyerFilter
 
 
+@swagger_auto_schema(request_body=RegistrationSerializer)
 class RegistrationAPIView(APIView):
     """APIView for create operation with User-Buyer model."""
 
@@ -65,6 +67,7 @@ class RegistrationAPIView(APIView):
         )
 
 
+@swagger_auto_schema(request_body=BalanceSerializer)
 class BalanceUpdateAPIView(APIView):
     """APIView for changing balance. It gets access_token from headers,
     then it tries to check and find user, if it exists and no errors were

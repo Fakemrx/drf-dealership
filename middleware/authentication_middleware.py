@@ -23,7 +23,9 @@ class JwtUserMiddleware:
         self.get_response = get_response
 
     def __call__(self, request):
-        if request.path.startswith("/api/buyer/"):
+        if not request.path.startswith(
+            "/api/buyer/registration/"
+        ) and not request.path.startswith("/admin/"):
             request.user = SimpleLazyObject(lambda: get_user(request))
             response = self.get_response(request)
             if hasattr(request, "user") and request.user is not None:

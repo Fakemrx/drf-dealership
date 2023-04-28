@@ -21,6 +21,7 @@ django-countries = "*"
 celery = "*"
 redis = "*"
 djangorestframework-simplejwt = "*"
+drf-yasg = "*"
 
 [dev-packages]
 
