@@ -2,7 +2,7 @@
 from rest_framework import permissions
 
 
-class IsSameUserAuthenticated(permissions.BasePermission):
+class IsOwner(permissions.BasePermission):
     """
     Permission that checks is user that tries to change data
     is the same user as data/account owner.
