@@ -87,27 +87,3 @@ class RegistrationAPIView(APIView):
             },
             status=status.HTTP_201_CREATED,
         )
-
-
-@swagger_auto_schema(request_body=BalanceSerializer)
-class BalanceUpdateAPIView(APIView):
-    """APIView for changing balance. It gets access_token from headers,
-    then it tries to check and find user, if it exists and no errors were
-    occurred it will update buyer's balance."""
-
-    permission_classes = [IsSameUserAuthenticated]
-    serializer_class = BalanceSerializer
-
-    def post(self, request):
-        """Updates buyer's balance."""
-        serializer = BalanceSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        value = serializer.validated_data["value_of_money"]
-        buyer = get_object_or_404(Buyer, account=request.user.id)
-
-        buyer.balance += value
-        buyer.save()
-
-        return Response(
-            {"message": f"{request.user}'s balance updated to {buyer.balance}"}
-        )

@@ -43,7 +43,13 @@ def test_put_offer(offer, buyer, car):
         "max_cost": "1111.00",
         "is_active": True,
     }
-    request = c.put(f"/api/buyer/offers/{offer.id}/", new_data, format="json")
+    token = get_user_token(buyer)
+    request = c.put(
+        f"/api/buyer/offers/{offer.id}/",
+        new_data,
+        format="json",
+        headers={"Authorization": f"Token {token}"},
+    )
     assert request.status_code == status.HTTP_200_OK, "Should be 200"
     assert new_data == request.data, "Should be equal"
     assert (
@@ -62,7 +68,13 @@ def test_patch_offer(offer, buyer, car):
         "max_cost": "3333.00",
         "is_active": True,
     }
-    request = c.patch(f"/api/buyer/offers/{offer.id}/", new_data, format="json")
+    token = get_user_token(buyer)
+    request = c.patch(
+        f"/api/buyer/offers/{offer.id}/",
+        new_data,
+        format="json",
+        headers={"Authorization": f"Token {token}"},
+    )
     assert request.status_code == status.HTTP_200_OK, "Should be 200"
     assert expected_data == request.data, "Should be equal"
     assert (
@@ -80,8 +92,13 @@ def test_delete_offer(offer, buyer, car):
         "max_cost": "5637.00",
         "is_active": True,
     }
-    response = c.get(f"/api/buyer/offers/{offer.id}/")
+    token = get_user_token(buyer)
+    response = c.get(
+        f"/api/buyer/offers/{offer.id}/", headers={"Authorization": f"Token {token}"}
+    )
     assert response.status_code == status.HTTP_200_OK, "Should be 200"
     assert expected_data == response.data, "Should be equal"
-    request = c.delete(f"/api/buyer/offers/{offer.id}/")
+    request = c.delete(
+        f"/api/buyer/offers/{offer.id}/", headers={"Authorization": f"Token {token}"}
+    )
     assert request.status_code == status.HTTP_204_NO_CONTENT, "Should be 204"

@@ -9,8 +9,10 @@ class IsOwner(permissions.BasePermission):
     """
 
     def has_object_permission(self, request, view, obj):
-        if request.path.startswith("/api/buyer/balance/"):
+        if request.path.startswith("/api/buyer/buyers/balance/"):
             return request.user.id == obj.account.id
-        if request.path.startswith("/api/buyer/offer/"):
+        if request.path.startswith("/api/buyer/offers/"):
             return request.user.id == obj.buyer.account.id
-        return True
+        if request.path.startswith(f"/api/buyer/buyers/{obj.id}/"):
+            return request.user.id == obj.account.id
+        return False

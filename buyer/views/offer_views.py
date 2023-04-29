@@ -2,17 +2,20 @@
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters
 from rest_framework.exceptions import ValidationError
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
 from buyer.filters import OfferFilter
 from buyer.models import Offer, Buyer
+from buyer.permissions import IsOwner
 from buyer.serializers.offer_serializers import OfferSerializer
 
 
 class OfferAPIView(ModelViewSet):
     """APIView for CRUD operations with Offer model."""
 
+    permission_classes = [IsAuthenticated, IsOwner]
     queryset = Offer.objects.select_related("buyer", "car")
     serializer_class = OfferSerializer
     filter_backends = [

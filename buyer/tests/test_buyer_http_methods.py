@@ -40,14 +40,12 @@ def test_get_buyer(buyer):
     ).get(id=buyer.id)
     assert expected_data == BuyerSerializer(db_data).data, "Should be equal"
 
-    user_token = c.post(
-        "/api/buyer/token/",
-        data={"username": buyer.account.username, "password": "TestPass123"},
-    ).data["access"]
+    token = get_user_token(buyer)
 
     response = c.get(
         f"/api/buyer/buyers/{buyer.id}/",
-        headers={"Authorization": f"Token {user_token}"},
+        headers={"Authorization": f"Token {token}"},
     )
+    print(response.data)
     assert response.status_code == status.HTTP_200_OK, "Should be 200"
-    assert expected_data == dict(response.data[0]), "Should be equal"
+    assert expected_data == dict(response.data), "Should be equal"

@@ -1,7 +1,6 @@
 """Buyer tasks to buy cars from dealerships."""
 from datetime import date
 from decimal import Decimal
-from operator import itemgetter
 
 from celery import shared_task
 from celery.utils.log import get_task_logger
@@ -39,7 +38,7 @@ def buy_car(offer):
 
     dealer_and_price = {}
     for stock in CarsInDealershipStock.objects.filter(
-        car=offer.car, quantity__gt=0
+        car=offer.car, quantity__gt=0, price__gt=0
     ).select_related("car", "dealership"):
         dealer_and_price[stock.dealership] = calculate_final_price(offer, stock)
     if not dealer_and_price:
@@ -57,6 +56,9 @@ def buy_car(offer):
 
 def data_entries(best_dealer, best_price, offer):
     """Creates and updates DB according to processing the offer"""
+    from buyer.models import Offer
+    from buyer.models import Buyer
+
     from dealership.models import (
         CarsInDealershipStock,
         CarDealership,
@@ -81,10 +83,8 @@ def data_entries(best_dealer, best_price, offer):
     if not created:
         dealer_discount.quantity_of_bought_cars += 1
         dealer_discount.save()
-    offer.is_active = False
-    offer.save()
-    offer.buyer.balance -= best_price
-    offer.buyer.save()
+    Offer.objects.filter(id=offer.id).update(is_active=False)
+    Buyer.objects.filter(id=offer.buyer_id).update(balance=F("balance") - best_price)
 
 
 def calculate_final_price(offer, stock):
