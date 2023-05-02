@@ -28,20 +28,24 @@ def test_post_offer(buyer, car):
         headers={"Authorization": f"Token {get_user_token(buyer)}"},
     )
     assert request.status_code == status.HTTP_200_OK, "Should be 200"
-    assert (
-        f"{buyer} just created a new offer." == request.data["message"]
-    ), "Should be equal"
+    expected_data = {
+        "id": request.data["message"]["id"],
+        "buyer": str(buyer),
+        "car": car.id,
+        "max_cost": "5637.00",
+    }
+    assert expected_data == request.data["message"], "Should be equal"
 
 
 @pytest.mark.django_db
 def test_put_offer(offer, buyer, car):
     """Testing PUT method to update offer instance."""
+    test_balance_increase(buyer)
     new_data = {
         "id": offer.id,
         "buyer": str(buyer),
         "car": car.id,
         "max_cost": "1111.00",
-        "is_active": True,
     }
     token = get_user_token(buyer)
     request = c.put(
@@ -51,7 +55,7 @@ def test_put_offer(offer, buyer, car):
         headers={"Authorization": f"Token {token}"},
     )
     assert request.status_code == status.HTTP_200_OK, "Should be 200"
-    assert new_data == request.data, "Should be equal"
+    assert new_data == request.data["message"], "Should be equal"
     assert (
         new_data == OfferSerializer(Offer.objects.get(id=offer.id)).data
     ), "Should be equal"
@@ -60,13 +64,13 @@ def test_put_offer(offer, buyer, car):
 @pytest.mark.django_db
 def test_patch_offer(offer, buyer, car):
     """Testing PATCH method to partial update offer instance."""
+    test_balance_increase(buyer)
     new_data = {"max_cost": "3333.00"}
     expected_data = {
         "id": offer.id,
         "buyer": str(buyer),
         "car": car.id,
         "max_cost": "3333.00",
-        "is_active": True,
     }
     token = get_user_token(buyer)
     request = c.patch(
@@ -76,7 +80,7 @@ def test_patch_offer(offer, buyer, car):
         headers={"Authorization": f"Token {token}"},
     )
     assert request.status_code == status.HTTP_200_OK, "Should be 200"
-    assert expected_data == request.data, "Should be equal"
+    assert expected_data == request.data["message"], "Should be equal"
     assert (
         expected_data == OfferSerializer(Offer.objects.get(id=offer.id)).data
     ), "Should be equal"
@@ -90,7 +94,6 @@ def test_delete_offer(offer, buyer, car):
         "buyer": str(buyer),
         "car": car.id,
         "max_cost": "5637.00",
-        "is_active": True,
     }
     token = get_user_token(buyer)
     response = c.get(

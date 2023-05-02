@@ -1,7 +1,6 @@
 """Module of CRUD APIViews for Offer model."""
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters
-from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
@@ -16,7 +15,7 @@ class OfferAPIView(ModelViewSet):
     """APIView for CRUD operations with Offer model."""
 
     permission_classes = [IsAuthenticated, IsOwner]
-    queryset = Offer.objects.select_related("buyer", "car")
+    queryset = Offer.objects.select_related("buyer", "car").filter(is_active=True)
     serializer_class = OfferSerializer
     filter_backends = [
         DjangoFilterBackend,
@@ -28,17 +27,35 @@ class OfferAPIView(ModelViewSet):
     ordering = ["max_cost"]
     filterset_class = OfferFilter
 
-    def create(self, request, *args, **kwargs):
-        serializer = OfferSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        buyer = (
-            Buyer.objects.filter(account=request.user).select_related("account").first()
+    @staticmethod
+    def serializer_data_processing(request, partial, **instance):
+        """Creates/updates/p_updates an offer instance"""
+        serializer = OfferSerializer(
+            data=request.data,
+            context={
+                "buyer": Buyer.objects.filter(account=request.user)
+                .select_related("account")
+                .first()
+            },
+            partial=partial,
+            **instance
         )
-        serializer.validated_data["buyer"] = buyer
-        serializer.validated_data["is_active"] = True
-        if serializer.validated_data["max_cost"] > buyer.balance:
-            raise ValidationError(
-                f"You don't have enough money, value should be under {buyer.balance}"
-            )
+        serializer.is_valid(raise_exception=True)
         serializer.save()
-        return Response({"message": f"{buyer} just created a new offer."})
+        return serializer
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.serializer_data_processing(request, False)
+        return Response({"message": serializer.data})
+
+    def update(self, request, *args, **kwargs):
+        serializer = self.serializer_data_processing(
+            request, False, instance=self.get_object()
+        )
+        return Response({"message": serializer.data})
+
+    def partial_update(self, request, *args, **kwargs):
+        serializer = self.serializer_data_processing(
+            request, True, instance=self.get_object()
+        )
+        return Response({"message": serializer.data})

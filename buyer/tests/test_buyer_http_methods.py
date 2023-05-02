@@ -46,6 +46,5 @@ def test_get_buyer(buyer):
         f"/api/buyer/buyers/{buyer.id}/",
         headers={"Authorization": f"Token {token}"},
     )
-    print(response.data)
     assert response.status_code == status.HTTP_200_OK, "Should be 200"
     assert expected_data == dict(response.data), "Should be equal"
