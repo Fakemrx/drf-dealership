@@ -39,10 +39,8 @@ def test_offer_serializer(offer, car, buyer):
     serializer_data = OfferSerializer(offer).data
     expected_data = {
         "id": offer.id,
-        "buyer": buyer.id,
+        "buyer": str(buyer),
         "car": car.id,
         "max_cost": "5637.00",
-        "quantity": 1,
-        "is_active": True,
     }
     assert serializer_data == expected_data, "Should be equal"

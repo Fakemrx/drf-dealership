@@ -2,6 +2,7 @@
 from django.contrib.auth import get_user_model
 from django.db.models import F
 from django_filters.rest_framework import DjangoFilterBackend
+from drf_yasg.utils import swagger_auto_schema
 from rest_framework import filters, status
 from rest_framework.decorators import action
 from rest_framework.mixins import RetrieveModelMixin, ListModelMixin
@@ -66,6 +67,7 @@ class BuyerRetrieveAPIView(GenericViewSet, RetrieveModelMixin, ListModelMixin):
         )
 
 
+@swagger_auto_schema(request_body=RegistrationSerializer)
 class RegistrationAPIView(APIView):
     """APIView for create operation with User-Buyer model."""
 

@@ -30,10 +30,7 @@ class Buyer(models.Model):
     is_active = models.BooleanField(verbose_name="Is active", default=True)
 
     def __str__(self):
-        return (
-            f"{self.account.first_name} {self.account.last_name} | "
-            f"{self.balance} USD | {self.is_active}"
-        )
+        return f"{self.account.first_name} {self.account.last_name}"
 
 
 class Offer(models.Model):
@@ -47,14 +44,13 @@ class Offer(models.Model):
     )
     car = models.ForeignKey("car.Car", on_delete=models.CASCADE, verbose_name="Car")
     max_cost = models.DecimalField(
-        max_digits=6, decimal_places=2, verbose_name="Maximum cost"
+        max_digits=8, decimal_places=2, verbose_name="Maximum cost"
     )
-    quantity = models.IntegerField(verbose_name="Quantity of cars")
     is_active = models.BooleanField(verbose_name="Is active")
 
     def __str__(self):
         return (
             f"{self.buyer.account.first_name} {self.buyer.account.last_name} "
-            f"want to buy {self.quantity} {self.car}, max price "
-            f"per 1 vehicle - {self.max_cost} USD"
+            f"{self.car}, max price per 1 vehicle - {self.max_cost} USD | "
+            f"Active: {self.is_active}"
         )
