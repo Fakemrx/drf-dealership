@@ -1,0 +1,60 @@
+version: '3.9'
+
+services:
+  drf_test_task:
+    build: .
+    entrypoint: /usr/src/app/entrypoint.sh
+    container_name: drf_cont
+    restart: always
+    command: python manage.py runserver 0.0.0.0:8000
+    ports:
+      - 8000:8000
+    env_file:
+      - .env
+    depends_on:
+      - postgres
+    volumes:
+      - ./:/usr/src/app
+
+  celery:
+    build: .
+    container_name: celery_cont
+    command: celery -A celery_tasks worker -l info
+    volumes:
+      - ./:/usr/src/app/
+    links:
+      - redis
+    env_file:
+      - .env
+    depends_on:
+      - drf_test_task
+      - postgres
+      - redis
+
+  celery-beat:
+    build: .
+    container_name: celery_beat_cont
+    command: celery -A celery_tasks beat -l info
+    volumes:
+      - ./:/usr/src/app/
+    env_file:
+      - .env
+    depends_on:
+      - drf_test_task
+      - postgres
+      - redis
+
+  postgres:
+    image: postgres:alpine
+    container_name: psql_cont
+    volumes:
+      - pg_data:/var/lib/postgresql/data/
+    env_file:
+      - .env
+
+  redis:
+    image: redis:alpine
+    container_name: redis_cont
+
+volumes:
+  pg_data:

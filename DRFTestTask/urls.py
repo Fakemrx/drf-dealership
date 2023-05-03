@@ -14,8 +14,17 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
+from django.views.generic.base import TemplateView
+from .yasg import urlpatterns as swagger_urls
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path("admin/", admin.site.urls, name="admin"),
+    path("api/", TemplateView.as_view(template_name="initial_page.html"), name="home"),
+    path("api/car/", include("car.urls"), name="car"),
+    path("api/buyer/", include("buyer.urls"), name="buyer"),
+    path("api/provider/", include("provider.urls"), name="provider"),
+    path("api/dealer/", include("dealership.urls"), name="dealer"),
 ]
+
+urlpatterns += swagger_urls

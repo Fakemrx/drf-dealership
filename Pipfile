@@ -6,6 +6,22 @@ name = "pypi"
 [packages]
 django = "*"
 djangorestframework = "*"
+psycopg2 = "*"
+pytest = "*"
+pytest-django = "*"
+flake8 = "*"
+mypy = "*"
+black = "*"
+pre-commit = "*"
+pylint-django = "*"
+pylint = "*"
+coverage = "*"
+django-filter = "*"
+django-countries = "*"
+celery = "*"
+redis = "*"
+djangorestframework-simplejwt = "*"
+drf-yasg = "*"
 
 [dev-packages]
 
