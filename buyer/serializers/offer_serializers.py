@@ -12,20 +12,19 @@ class OfferSerializer(serializers.ModelSerializer):
     max_cost = serializers.DecimalField(min_value=0, decimal_places=2, max_digits=8)
     is_active = serializers.HiddenField(default=True)
 
-    def validate(self, attrs):
-        """
-        Check that the max_cost is lower than buyer's balance.
-        """
-        attrs["buyer"] = self.context["buyer"]
-        if attrs["max_cost"] > attrs["buyer"].balance:
-            raise serializers.ValidationError(
-                {
-                    "max_cost": f"You don't have enough "
-                    f"money, value should be under "
-                    f"{attrs['buyer'].balance}"
-                }
-            )
-        return attrs
+    def create(self, validated_data):
+        """Create method with validation for max_cost field"""
+        if "buyer" in self.context.keys():
+            validated_data["buyer"] = self.context["buyer"]
+            if validated_data["max_cost"] > validated_data["buyer"].balance:
+                raise serializers.ValidationError(
+                    {
+                        "max_cost": f"You don't have enough "
+                        f"money, value should be under "
+                        f"{validated_data['buyer'].balance}"
+                    }
+                )
+        return Offer.objects.create(**validated_data)
 
     class Meta:
         model = Offer

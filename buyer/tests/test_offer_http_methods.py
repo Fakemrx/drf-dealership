@@ -55,7 +55,7 @@ def test_put_offer(offer, buyer, car):
         headers={"Authorization": f"Token {token}"},
     )
     assert request.status_code == status.HTTP_200_OK, "Should be 200"
-    assert new_data == request.data["message"], "Should be equal"
+    assert new_data == request.data, "Should be equal"
     assert (
         new_data == OfferSerializer(Offer.objects.get(id=offer.id)).data
     ), "Should be equal"
@@ -80,7 +80,7 @@ def test_patch_offer(offer, buyer, car):
         headers={"Authorization": f"Token {token}"},
     )
     assert request.status_code == status.HTTP_200_OK, "Should be 200"
-    assert expected_data == request.data["message"], "Should be equal"
+    assert expected_data == request.data, "Should be equal"
     assert (
         expected_data == OfferSerializer(Offer.objects.get(id=offer.id)).data
     ), "Should be equal"

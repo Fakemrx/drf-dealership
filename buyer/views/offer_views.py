@@ -27,35 +27,15 @@ class OfferAPIView(ModelViewSet):
     ordering = ["max_cost"]
     filterset_class = OfferFilter
 
-    @staticmethod
-    def serializer_data_processing(request, partial, **instance):
-        """Creates/updates/p_updates an offer instance"""
-        serializer = OfferSerializer(
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(
             data=request.data,
             context={
                 "buyer": Buyer.objects.filter(account=request.user)
                 .select_related("account")
                 .first()
             },
-            partial=partial,
-            **instance
         )
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        return serializer
-
-    def create(self, request, *args, **kwargs):
-        serializer = self.serializer_data_processing(request, False)
-        return Response({"message": serializer.data})
-
-    def update(self, request, *args, **kwargs):
-        serializer = self.serializer_data_processing(
-            request, False, instance=self.get_object()
-        )
-        return Response({"message": serializer.data})
-
-    def partial_update(self, request, *args, **kwargs):
-        serializer = self.serializer_data_processing(
-            request, True, instance=self.get_object()
-        )
         return Response({"message": serializer.data})
